@@ -3,14 +3,13 @@
 
    	This header declares structures and functions that store and
 	manipulate geographic data.
+
+	$Id$
  */
 
 #ifndef GEOG_H_
 #define GEOG_H_
 
-struct latlon {
-    unsigned lat;
-    unsigned lon;
-};
+double lonr(double, double);
 
 #endif
