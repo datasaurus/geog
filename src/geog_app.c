@@ -1,6 +1,14 @@
+/*
+   geog_app.c --
+
+   	This file defines an application that does geography calculations.
+
+	$Id$
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
-#include "geog.h"
+#include <geog.h>
 
 int main(void)
 {
