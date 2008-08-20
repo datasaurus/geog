@@ -1,3 +1,12 @@
+/*
+   geog_lib.c --
+
+   	This file defines functions that do geography calculations and
+	manage geographic data.
+
+	$Id$
+ */
+
 #include <math.h>
 #include "geog.h"
 
