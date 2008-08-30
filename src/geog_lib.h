@@ -4,12 +4,13 @@
    	This header declares structures and functions that store and
 	manipulate geographic data.
 
-	$Id: geog_lib.h,v 1.3 2008/08/20 03:39:16 tkgeomap Exp $
+	$Id: geog_lib.h,v 1.4 2008/08/20 03:40:42 tkgeomap Exp $
  */
 
 #ifndef GEOG_H_
 #define GEOG_H_
 
-double rlon(double, const double);
+double rlon(const double, const double);
+double plat(const double);
 
 #endif

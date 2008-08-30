@@ -4,14 +4,23 @@
    	This file defines functions that do geography calculations and
 	manage geographic data.
 
-	$Id: geog_lib.c,v 1.4 2008/08/20 03:39:16 tkgeomap Exp $
+	$Id: geog_lib.c,v 1.5 2008/08/20 03:40:42 tkgeomap Exp $
  */
 
 #include <math.h>
 #include "geog.h"
 
-double rlon(double l, const double r)
+double rlon(const double l, const double r)
 {
-    l = fmod(l, 360.0);
-    return (l < r - 180.0) ? l + 360.0 : (l >= r + 180.0) ? l - 360.0 : l;
+    double l1 = fmod(l, 360.0);
+    return (l1 < r - 180.0) ? l1 + 360.0 : (l1 >= r + 180.0) ? l1 - 360.0 : l1;
+}
+
+double plat(const double l)
+{
+    double l1 = fmod(l, 360.0);
+    return (l1 > 270.0) ? l1 - 360.0
+	: (l1 > 180.0) ? l1 - 270.0
+	: (l1 > 90.0 ) ? 180.0 - l1
+	: l1;
 }
