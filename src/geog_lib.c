@@ -1,10 +1,14 @@
 /*
-   geog_lib.c --
+ - geog_lib.c --
+ - 	This file defines functions that do geography calculations and
+ -	manage geographic data.
+ -
+   Copyright (c) 2008 Gordon D. Carrie
+   Licensed under the Open Software License version 3.0
 
-   	This file defines functions that do geography calculations and
-	manage geographic data.
+   Please send feedback to user0@tkgeomap.org
 
-	$Id: geog_lib.c,v 1.5 2008/08/20 03:40:42 tkgeomap Exp $
+   $Id: geog_lib.c,v 1.6 2008/08/30 16:02:06 tkgeomap Exp $
  */
 
 #include <math.h>

@@ -1,10 +1,14 @@
 /*
-   geog_lib.h --
+ - geog_lib.h --
+ - 	This header declares structures and functions that store and
+ -	manipulate geographic data.
+ -
+   Copyright (c) 2008 Gordon D. Carrie
+   Licensed under the Open Software License version 3.0
+  
+   Please send feedback to user0@tkgeomap.org
 
-   	This header declares structures and functions that store and
-	manipulate geographic data.
-
-	$Id: geog_lib.h,v 1.4 2008/08/20 03:40:42 tkgeomap Exp $
+   $Id: geog_lib.h,v 1.5 2008/08/30 16:02:24 tkgeomap Exp $
  */
 
 #ifndef GEOG_H_

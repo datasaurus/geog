@@ -1,9 +1,13 @@
 /*
-   geog_app.c --
+ - geog_app.c --
+ - 	This file defines an application that does geography calculations.
+ -
+   Copyright (c) 2008 Gordon D. Carrie
+   Licensed under the Open Software License version 3.0
+  
+   Please send feedback to user0@tkgeomap.org
 
-   	This file defines an application that does geography calculations.
-
-	$Id: geog_app.c,v 1.2 2008/08/17 04:20:53 tkgeomap Exp $
+   $Id: geog_app.c,v 1.3 2008/08/20 03:09:39 tkgeomap Exp $
  */
 
 #include <stdlib.h>
