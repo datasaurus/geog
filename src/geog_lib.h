@@ -6,9 +6,9 @@
    Copyright (c) 2008 Gordon D. Carrie
    Licensed under the Open Software License version 3.0
   
-   Please send feedback to user0@tkgeomap.org
+   Please send feedback to dev0@trekix.net
 
-   $Id: geog_lib.h,v 1.5 2008/08/30 16:02:24 tkgeomap Exp $
+   $Id: geog_lib.h,v 1.6 2008/11/22 18:41:23 gcarrie Exp $
  */
 
 #ifndef GEOG_H_

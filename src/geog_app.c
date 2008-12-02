@@ -5,9 +5,9 @@
    Copyright (c) 2008 Gordon D. Carrie
    Licensed under the Open Software License version 3.0
   
-   Please send feedback to user0@tkgeomap.org
+   Please send feedback to dev0@trekix.net
 
-   $Id: geog_app.c,v 1.3 2008/08/20 03:09:39 tkgeomap Exp $
+   $Id: geog_app.c,v 1.4 2008/11/22 18:41:23 gcarrie Exp $
  */
 
 #include <stdlib.h>
