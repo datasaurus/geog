@@ -8,7 +8,7 @@
 
    Please send feedback to dev0@trekix.net
 
-   $Id: geog_lib.c,v 1.7 2008/11/22 18:41:23 gcarrie Exp $
+   $Revision$ $Date$
  */
 
 #include <math.h>
