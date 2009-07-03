@@ -8,7 +8,7 @@
 
    Please send feedback to dev0@trekix.net
 
-   $Revision$ $Date$
+   $Revision: 1.9 $ $Date: 2008/12/17 22:55:56 $
  */
 
 #include <math.h>
@@ -24,7 +24,6 @@ double plat(const double l)
 {
     double l1 = fmod(l, 360.0);
     return (l1 > 270.0) ? l1 - 360.0
-	: (l1 > 180.0) ? l1 - 270.0
 	: (l1 > 90.0 ) ? 180.0 - l1
 	: l1;
 }
