@@ -1,0 +1,30 @@
+.\" 
+.\" Copyright (c) 2009 Gordon D. Carrie.  All rights reserved.
+.\" 
+.\" Licensed under the Open Software License version 3.0
+.\" 
+.\" Please address questions and feedback to dev0@trekix.net
+.\" 
+.\" $Revision: $ $Date: $
+.\"
+.TH geog_lib 3 "geography functions"
+.SH NAME
+rlon, plat \- geography functions
+.SH SYNOPSIS
+.nf
+\fBdouble rlon(const double\fP \fIl\fP, \fBconst double \fIr\fP\fB);\fP
+\fBdouble plat(const double \fIl\fP\fB);\fP
+.fi
+.SH DESCRIPTION
+Longitudes and latitudes are expressed in degrees.
+
+\fBrlon\fP computes a longitude equivalent to \fIl\fP in a longitude domain
+centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ 360.0 for some
+integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
+
+\fBplat\fP computes the principle latitude corresponding to \fIl\fP.  Return value
+is the latitude reached by going \fIl\fP degrees north of the Equator.
+.SH SEE ALSO
+\fBgeog_app\fP (1)
+.SH AUTHOR
+Gordon Carrie (dev0@trekix.net)
