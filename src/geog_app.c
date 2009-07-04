@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.7 $ $Date: 2009/07/03 21:52:39 $
+   $Revision: 1.8 $ $Date: 2009/07/04 18:24:51 $
  */
 
 #include <stdlib.h>
@@ -19,7 +19,6 @@
 
 /* Application name and subcommand name */
 char *cmd;
-char *cmd1;
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -35,52 +34,86 @@ char *cmd1v[NCMD] = {"lonr", "plat"};
 /* Array of subcomand callbacks. cb1v[i] is the callback for cmd1v[i] */
 callback *cb1v[NCMD] = {lonr_cb, plat_cb};
 
+/* Output format */
+char *fmt;
+
 int main(int argc, char *argv[])
 {
-    int i;
+    int i, j;
+    char *cmd1;
     int rslt;
 
     /* Ensure minimum command line */
     cmd = argv[0];
     if (argc < 2) {
-	fprintf(stderr, "Usage: %s subcommand [options ...]\n", cmd);
+	fprintf(stderr,
+		"Usage: %s [%s_options ...] subcommand [subcommand_options ...]\n",
+		cmd, cmd);
 	exit(1);
     }
-    cmd1 = argv[1];
+
+    /* Parse application options */
+    fmt = NULL;
+    for (i = 1; argv[i]; i++) {
+	if (strcmp(argv[i], "-f") == 0) {
+	    fmt = MALLOC(strlen(argv[++i] + 2));
+	    if ( !fmt ) {
+		fprintf(stderr, "%s could not allocate memory for output.\n", cmd);
+		exit(1);
+	    }
+	    sprintf(fmt, "%s\n", argv[i]);
+	} else {
+	    cmd1 = argv[i];
+	    break;
+	}
+    }
+    if ( !fmt ) {
+	fmt = MALLOC(strlen("%lf\n" + 1));
+	if ( !fmt ) {
+	    fprintf(stderr, "%s could not allocate memory for output.\n", cmd);
+	    exit(1);
+	}
+	sprintf(fmt, "%%lf\n");
+    }
 
     /* Search cmd1v for cmd1.  When match is found, evaluate the associated
      * callback from cb1v. */
-    for (i = 0; i < NCMD; i++) {
-	if (strcmp(cmd1v[i], cmd1) == 0) {
-	    rslt = (cb1v[i])(argc - 2, argv + 2);
+    for (j = 0; j < NCMD; j++) {
+	if (strcmp(cmd1v[j], cmd1) == 0) {
+	    rslt = (cb1v[j])(argc - i, argv + i);
 	    if ( !rslt ) {
 		fprintf(stderr, "%s %s failed.\n", cmd, cmd1);
 		fprintf(stderr, "%s\n", err_get());
-		exit(1);
+		break;
 	    } else {
-		exit(0);
+		break;
 	    }
 	}
     }
-    fprintf(stderr, "%s: No subcommand named %s\n", cmd, cmd1);
-    return 1;
+    if (j == NCMD) {
+	fprintf(stderr, "%s: No option or subcommand named %s\n", cmd, cmd1);
+    }
+    FREE(fmt);
+    return !rslt;
 }
 
 int lonr_cb(int argc, char *argv[])
 {
-    char *l_s, *r_s;	/* Strings from command line */
-    double l, r;	/* Values from command line */
+    char *cmd1 = argv[0];	/* Name of this subcommand */
+    char *l_s, *r_s;		/* Strings from command line */
+    double l, r;		/* Values from command line */
 
     /* Ensure minimum command line */
-    if (argc != 2) {
+    if (argc != 3) {
 	err_append("Usage: ");
 	err_append(cmd);
+	err_append(" ");
 	err_append(cmd1);
 	err_append(" lon reflon\n");
 	return 0;
     }
-    l_s = argv[0];
-    r_s = argv[1];
+    l_s = argv[1];
+    r_s = argv[2];
 
     /* Get values from command line arguments */
     if (sscanf(l_s, "%lf", &l) != 1) {
@@ -95,24 +128,25 @@ int lonr_cb(int argc, char *argv[])
     }
 
     /* Send result */
-    printf("%lf\n", lonr(l, r));
+    printf(fmt, lonr(l, r));
     return 1;
 }
 
 int plat_cb(int argc, char *argv[])
 {
-    char *l_s;		/* String from command line */
+    char *cmd1 = argv[0];	/* Name of this subcommand */
+    char *l_s;			/* String from command line */
     double l;			/* Latitude value from command line */
 
     /* Ensure minimum command line */
-    if (argc != 1) {
+    if (argc != 2) {
 	err_append("Usage: ");
 	err_append(cmd);
 	err_append(cmd1);
 	err_append(" lat\n");
 	return 0;
     }
-    l_s = argv[0];
+    l_s = argv[1];
 
     /* Get latitude value from command line argument */
     if (sscanf(l_s, "%lf", &l) != 1) {
@@ -122,6 +156,6 @@ int plat_cb(int argc, char *argv[])
     }
 
     /* Send result */
-    printf("%lf\n", plat(l));
+    printf(fmt, plat(l));
     return 1;
 }
