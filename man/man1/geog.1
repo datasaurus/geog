@@ -5,13 +5,13 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.1 $ $Date: 2009/07/03 22:08:38 $
+.\" $Revision: 1.2 $ $Date: 2009/07/04 18:24:51 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
 geog \- geography application
 .SH SYNOPSIS
-\fBgeog\fP \fIgeog_command\fP [\fIcommand_options ...\fP]
+\fBgeog\fP [\fB-f\fP \fIformat\fP] \fIgeog_command\fP [\fIgeog_command_options ...\fP]
 .SH DESCRIPTION
 The \fBgeog\fP application calculates distances and angles on Earth's surface.
 The \fIgeog_command\fP argument determines its behavior.  It must be one of
@@ -25,6 +25,10 @@ integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
 \fBgeog\fP \fBplat\fP \fIl\fP
 Computes the principle latitude corresponding to \fIl\fP.  Return value
 is the latitude reached by going \fIl\fP degrees north of the Equator.
+.PP
+If present, \fIformat\fP gives the output format.  It should be a format
+specifier that would tell \fBprintf\fP (3) to print a float value.  The
+\fBgeog\fP application will always append a newline to \fIformat\fP.
 .SH SEE ALSO
 \fBgeog_lib\fP (3)
 .SH AUTHOR
