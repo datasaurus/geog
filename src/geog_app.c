@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.6 $ $Date: 2008/12/17 22:53:56 $
+   $Revision: 1.7 $ $Date: 2009/07/03 21:52:39 $
  */
 
 #include <stdlib.h>
@@ -23,17 +23,17 @@ char *cmd1;
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
-callback rlon_cb;
+callback lonr_cb;
 callback plat_cb;
 
 /* Number of subcommands */
 #define NCMD 2
 
 /* Array of subcommand names */
-char *cmd1v[NCMD] = {"rlon", "plat"};
+char *cmd1v[NCMD] = {"lonr", "plat"};
 
 /* Array of subcomand callbacks. cb1v[i] is the callback for cmd1v[i] */
-callback *cb1v[NCMD] = {rlon_cb, plat_cb};
+callback *cb1v[NCMD] = {lonr_cb, plat_cb};
 
 int main(int argc, char *argv[])
 {
@@ -66,10 +66,10 @@ int main(int argc, char *argv[])
     return 1;
 }
 
-int rlon_cb(int argc, char *argv[])
+int lonr_cb(int argc, char *argv[])
 {
-    char *lon_s, *rlon_s;	/* Strings from command line */
-    double l, r;		/* Values from command line */
+    char *l_s, *r_s;	/* Strings from command line */
+    double l, r;	/* Values from command line */
 
     /* Ensure minimum command line */
     if (argc != 2) {
@@ -79,29 +79,29 @@ int rlon_cb(int argc, char *argv[])
 	err_append(" lon reflon\n");
 	return 0;
     }
-    lon_s = argv[0];
-    rlon_s = argv[1];
+    l_s = argv[0];
+    r_s = argv[1];
 
     /* Get values from command line arguments */
-    if (sscanf(lon_s, "%lf", &l) != 1) {
+    if (sscanf(l_s, "%lf", &l) != 1) {
 	err_append("Expected float value for longitude, got ");
-	err_append(lon_s);
+	err_append(l_s);
 	return 0;
     }
-    if (sscanf(rlon_s, "%lf", &r) != 1) {
+    if (sscanf(r_s, "%lf", &r) != 1) {
 	err_append("Expected float value for reference longitude, got ");
-	err_append(rlon_s);
+	err_append(r_s);
 	return 0;
     }
 
     /* Send result */
-    printf("%lf\n", rlon(l, r));
+    printf("%lf\n", lonr(l, r));
     return 1;
 }
 
 int plat_cb(int argc, char *argv[])
 {
-    char *lat_s;		/* String from command line */
+    char *l_s;		/* String from command line */
     double l;			/* Latitude value from command line */
 
     /* Ensure minimum command line */
@@ -112,12 +112,12 @@ int plat_cb(int argc, char *argv[])
 	err_append(" lat\n");
 	return 0;
     }
-    lat_s = argv[0];
+    l_s = argv[0];
 
     /* Get latitude value from command line argument */
-    if (sscanf(lat_s, "%lf", &l) != 1) {
+    if (sscanf(l_s, "%lf", &l) != 1) {
 	err_append("Expected float value for latitude, got ");
-	err_append(lat_s);
+	err_append(l_s);
 	return 0;
     }
 

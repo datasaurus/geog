@@ -8,13 +8,13 @@
 
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.9 $ $Date: 2008/12/17 22:55:56 $
+   $Revision: 1.10 $ $Date: 2009/07/03 21:25:37 $
  */
 
 #include <math.h>
 #include "geog.h"
 
-double rlon(const double l, const double r)
+double lonr(const double l, const double r)
 {
     double l1 = fmod(l, 360.0);
     return (l1 < r - 180.0) ? l1 + 360.0 : (l1 >= r + 180.0) ? l1 - 360.0 : l1;
