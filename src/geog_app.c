@@ -7,14 +7,14 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.8 $ $Date: 2009/07/04 18:24:51 $
+   $Revision: 1.9 $ $Date: 2009/07/04 22:22:58 $
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "alloc.h"
 #include "err_msg.h"
+#include "mstring.h"
 #include "geog.h"
 
 /* Application name and subcommand name */
@@ -53,27 +53,14 @@ int main(int argc, char *argv[])
     }
 
     /* Parse application options */
-    fmt = NULL;
+    fmt = "%lf\n";
     for (i = 1; argv[i]; i++) {
 	if (strcmp(argv[i], "-f") == 0) {
-	    fmt = MALLOC(strlen(argv[++i] + 2));
-	    if ( !fmt ) {
-		fprintf(stderr, "%s could not allocate memory for output.\n", cmd);
-		exit(1);
-	    }
-	    sprintf(fmt, "%s\n", argv[i]);
+	    fmt = stresc(argv[++i]);
 	} else {
 	    cmd1 = argv[i];
 	    break;
 	}
-    }
-    if ( !fmt ) {
-	fmt = MALLOC(strlen("%lf\n" + 1));
-	if ( !fmt ) {
-	    fprintf(stderr, "%s could not allocate memory for output.\n", cmd);
-	    exit(1);
-	}
-	sprintf(fmt, "%%lf\n");
     }
 
     /* Search cmd1v for cmd1.  When match is found, evaluate the associated
@@ -93,7 +80,6 @@ int main(int argc, char *argv[])
     if (j == NCMD) {
 	fprintf(stderr, "%s: No option or subcommand named %s\n", cmd, cmd1);
     }
-    FREE(fmt);
     return !rslt;
 }
 
