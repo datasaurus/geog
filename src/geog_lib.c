@@ -8,7 +8,7 @@
 
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.10 $ $Date: 2009/07/03 21:25:37 $
+   $Revision: 1.11 $ $Date: 2009/07/04 18:24:51 $
  */
 
 #include <math.h>
@@ -23,6 +23,7 @@ double lonr(const double l, const double r)
 double plat(const double l)
 {
     double l1 = fmod(l, 360.0);
+    l1 += (l1 < 0.0) ? 360.0 : 0.0;
     return (l1 > 270.0) ? l1 - 360.0
 	: (l1 > 90.0 ) ? 180.0 - l1
 	: l1;
