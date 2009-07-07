@@ -8,11 +8,11 @@
 
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.12 $ $Date: 2009/07/07 17:52:36 $
+   $Revision: 1.13 $ $Date: 2009/07/07 17:53:15 $
  */
 
 #include <math.h>
-#include "geog.h"
+#include "geog_lib.h"
 
 double lonr(const double l, const double r)
 {

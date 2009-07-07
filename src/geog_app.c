@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.9 $ $Date: 2009/07/04 22:22:58 $
+   $Revision: 1.10 $ $Date: 2009/07/06 21:46:20 $
  */
 
 #include <stdlib.h>
@@ -15,7 +15,7 @@
 #include <string.h>
 #include "err_msg.h"
 #include "mstring.h"
-#include "geog.h"
+#include "geog_lib.h"
 
 /* Application name and subcommand name */
 char *cmd;
