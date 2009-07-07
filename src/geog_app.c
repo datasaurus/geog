@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.10 $ $Date: 2009/07/06 21:46:20 $
+   $Revision: 1.11 $ $Date: 2009/07/07 20:24:19 $
  */
 
 #include <stdlib.h>
@@ -18,7 +18,7 @@
 #include "geog_lib.h"
 
 /* Application name and subcommand name */
-char *cmd;
+char *cmd, *cmd1;
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -40,7 +40,6 @@ char *fmt;
 int main(int argc, char *argv[])
 {
     int i, j;
-    char *cmd1;
     int rslt;
 
     /* Ensure minimum command line */
@@ -67,7 +66,7 @@ int main(int argc, char *argv[])
      * callback from cb1v. */
     for (j = 0; j < NCMD; j++) {
 	if (strcmp(cmd1v[j], cmd1) == 0) {
-	    rslt = (cb1v[j])(argc - i, argv + i);
+	    rslt = (cb1v[j])(argc - i - 1, argv + i + 1);
 	    if ( !rslt ) {
 		fprintf(stderr, "%s %s failed.\n", cmd, cmd1);
 		fprintf(stderr, "%s\n", err_get());
@@ -79,6 +78,7 @@ int main(int argc, char *argv[])
     }
     if (j == NCMD) {
 	fprintf(stderr, "%s: No option or subcommand named %s\n", cmd, cmd1);
+	rslt = 0;
     }
     return !rslt;
 }
@@ -90,7 +90,7 @@ int lonr_cb(int argc, char *argv[])
     double l, r;		/* Values from command line */
 
     /* Ensure minimum command line */
-    if (argc != 3) {
+    if (argc != 2) {
 	err_append("Usage: ");
 	err_append(cmd);
 	err_append(" ");
@@ -98,8 +98,8 @@ int lonr_cb(int argc, char *argv[])
 	err_append(" lon reflon\n");
 	return 0;
     }
-    l_s = argv[1];
-    r_s = argv[2];
+    l_s = argv[0];
+    r_s = argv[1];
 
     /* Get values from command line arguments */
     if (sscanf(l_s, "%lf", &l) != 1) {
@@ -125,14 +125,14 @@ int plat_cb(int argc, char *argv[])
     double l;			/* Latitude value from command line */
 
     /* Ensure minimum command line */
-    if (argc != 2) {
+    if (argc != 1) {
 	err_append("Usage: ");
 	err_append(cmd);
 	err_append(cmd1);
 	err_append(" lat\n");
 	return 0;
     }
-    l_s = argv[1];
+    l_s = argv[0];
 
     /* Get latitude value from command line argument */
     if (sscanf(l_s, "%lf", &l) != 1) {
