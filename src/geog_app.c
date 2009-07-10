@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.12 $ $Date: 2009/07/07 21:25:03 $
+   $Revision: 1.13 $ $Date: 2009/07/10 19:06:12 $
  */
 
 #include <stdlib.h>
@@ -39,34 +39,24 @@ char *fmt;
 
 int main(int argc, char *argv[])
 {
-    int i, j;
+    int i;
     int rslt;
 
     /* Ensure minimum command line */
     cmd = argv[0];
     if (argc < 2) {
 	fprintf(stderr,
-		"Usage: %s [%s_options ...] subcommand [subcommand_options ...]\n",
+		"Usage: %s subcommand [subcommand_options ...]\n",
 		cmd, cmd);
 	exit(1);
     }
-
-    /* Parse application options */
-    fmt = "%lf\n";
-    for (i = 1; argv[i]; i++) {
-	if (strcmp(argv[i], "-f") == 0) {
-	    fmt = stresc(argv[++i]);
-	} else {
-	    cmd1 = argv[i];
-	    break;
-	}
-    }
+    cmd1 = argv[1];
 
     /* Search cmd1v for cmd1.  When match is found, evaluate the associated
      * callback from cb1v. */
-    for (j = 0; j < NCMD; j++) {
-	if (strcmp(cmd1v[j], cmd1) == 0) {
-	    rslt = (cb1v[j])(argc - i - 1, argv + i + 1);
+    for (i = 0; i < NCMD; i++) {
+	if (strcmp(cmd1v[i], cmd1) == 0) {
+	    rslt = (cb1v[i])(argc - 1, argv + 1);
 	    if ( !rslt ) {
 		fprintf(stderr, "%s %s failed.\n", cmd, cmd1);
 		fprintf(stderr, "%s\n", err_get());
@@ -76,11 +66,11 @@ int main(int argc, char *argv[])
 	    }
 	}
     }
-    if (j == NCMD) {
+    if (i == NCMD) {
 	fprintf(stderr, "%s: No option or subcommand named %s\n", cmd, cmd1);
 	fprintf(stderr, "Subcommand must be one of: ");
-	for (j = 0; j < NCMD; j++) {
-	    fprintf(stderr, "%s ", cmd1v[j]);
+	for (i = 0; i < NCMD; i++) {
+	    fprintf(stderr, "%s ", cmd1v[i]);
 	}
 	fprintf(stderr, "\n");
 	rslt = 0;
@@ -90,21 +80,28 @@ int main(int argc, char *argv[])
 
 int lonr_cb(int argc, char *argv[])
 {
-    char *cmd1 = argv[0];	/* Name of this subcommand */
     char *l_s, *r_s;		/* Strings from command line */
     double l, r;		/* Values from command line */
+    char *fmt;
 
     /* Ensure minimum command line */
-    if (argc != 2) {
+    if (argc < 3) {
 	err_append("Usage: ");
 	err_append(cmd);
 	err_append(" ");
 	err_append(cmd1);
-	err_append(" lon reflon\n");
+	err_append("[-f format] lon reflon\n");
 	return 0;
     }
-    l_s = argv[0];
-    r_s = argv[1];
+    fmt = "%lf\n";
+    if (strcmp(argv[1], "-f") == 0) {
+	fmt = stresc(argv[2]);
+	l_s = argv[3];
+	r_s = argv[4];
+    } else {
+	l_s = argv[1];
+	r_s = argv[2];
+    }
 
     /* Get values from command line arguments */
     if (sscanf(l_s, "%lf", &l) != 1) {
@@ -125,19 +122,26 @@ int lonr_cb(int argc, char *argv[])
 
 int plat_cb(int argc, char *argv[])
 {
-    char *cmd1 = argv[0];	/* Name of this subcommand */
     char *l_s;			/* String from command line */
     double l;			/* Latitude value from command line */
+    char *fmt;
 
     /* Ensure minimum command line */
-    if (argc != 1) {
+    if (argc < 2) {
 	err_append("Usage: ");
 	err_append(cmd);
+	err_append(" ");
 	err_append(cmd1);
-	err_append(" lat\n");
+	err_append("[-f format] lat\n");
 	return 0;
     }
-    l_s = argv[0];
+    fmt = "%lf\n";
+    if (strcmp(argv[1], "-f") == 0) {
+	fmt = stresc(argv[2]);
+	l_s = argv[3];
+    } else {
+	l_s = argv[1];
+    }
 
     /* Get latitude value from command line argument */
     if (sscanf(l_s, "%lf", &l) != 1) {
