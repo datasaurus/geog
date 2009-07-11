@@ -5,16 +5,18 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.3 $ $Date: 2009/07/07 20:26:30 $
+.\" $Revision: 1.4 $ $Date: 2009/07/07 20:27:58 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
-lonr, plat \- geography functions
+lonr, plat, gcdist \- geography functions
 .SH SYNOPSIS
 .nf
 \fB#include "geog_lib.h"\fP
-\fBdouble lonr(const double\fP \fIl\fP, \fBconst double \fIr\fP\fB);\fP
-\fBdouble plat(const double \fIl\fP\fB);\fP
+\fBdouble lonr(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
+\fBdouble plat(const double\fP \fIl\fP\fB);\fP
+\fBdouble gcdist(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
+	\fBconst double\fP \fIlat2\fP, \fBconst double\fP \fIlon2\fP);
 .fi
 .SH DESCRIPTION
 Longitudes and latitudes are expressed in degrees.
@@ -25,6 +27,9 @@ integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
 
 \fBplat\fP computes the principle latitude corresponding to \fIl\fP.  Return value
 is the latitude reached by going \fIl\fP degrees north of the Equator.
+
+\fBgcdist\fP returns the great circle distance between points
+(\fIlat1\fP,\ \fIlon1\fP) and (\fIlat2\fP,\ \fIlon2\fP).
 .SH SEE ALSO
 \fBgeog\fP (1)
 .SH AUTHOR

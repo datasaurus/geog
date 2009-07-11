@@ -8,7 +8,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.9 $ $Date: 2009/07/04 18:24:16 $
+   $Revision: 1.10 $ $Date: 2009/07/07 20:24:48 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -16,5 +16,6 @@
 
 double lonr(const double, const double);
 double plat(const double);
+double gcdist(const double, const double, const double, const double);
 
 #endif
