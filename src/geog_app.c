@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.13 $ $Date: 2009/07/10 19:06:12 $
+   $Revision: 1.14 $ $Date: 2009/07/10 22:02:14 $
  */
 
 #include <stdlib.h>
@@ -20,34 +20,26 @@
 /* Application name and subcommand name */
 char *cmd, *cmd1;
 
+/* Number of subcommands */
+#define NCMD 2
+
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
 callback lonr_cb;
 callback plat_cb;
 
-/* Number of subcommands */
-#define NCMD 2
-
-/* Array of subcommand names */
-char *cmd1v[NCMD] = {"lonr", "plat"};
-
-/* Array of subcomand callbacks. cb1v[i] is the callback for cmd1v[i] */
-callback *cb1v[NCMD] = {lonr_cb, plat_cb};
-
-/* Output format */
-char *fmt;
-
 int main(int argc, char *argv[])
 {
-    int i;
-    int rslt;
+    int i;		/* Index for subcommand in argv[1] */
+    int rslt;		/* Return code */
 
-    /* Ensure minimum command line */
+    /* Arrays of subcommand names and associated callbacks */
+    char *cmd1v[NCMD] = {"lonr", "plat"};
+    callback *cb1v[NCMD] = {lonr_cb, plat_cb};
+
     cmd = argv[0];
     if (argc < 2) {
-	fprintf(stderr,
-		"Usage: %s subcommand [subcommand_options ...]\n",
-		cmd, cmd);
+	fprintf(stderr, "Usage: %s subcommand [subcommand_options ...]\n", cmd);
 	exit(1);
     }
     cmd1 = argv[1];
@@ -82,9 +74,8 @@ int lonr_cb(int argc, char *argv[])
 {
     char *l_s, *r_s;		/* Strings from command line */
     double l, r;		/* Values from command line */
-    char *fmt;
+    char *fmt;			/* Format for printing result */
 
-    /* Ensure minimum command line */
     if (argc < 3) {
 	err_append("Usage: ");
 	err_append(cmd);
@@ -102,8 +93,6 @@ int lonr_cb(int argc, char *argv[])
 	l_s = argv[1];
 	r_s = argv[2];
     }
-
-    /* Get values from command line arguments */
     if (sscanf(l_s, "%lf", &l) != 1) {
 	err_append("Expected float value for longitude, got ");
 	err_append(l_s);
@@ -114,8 +103,6 @@ int lonr_cb(int argc, char *argv[])
 	err_append(r_s);
 	return 0;
     }
-
-    /* Send result */
     printf(fmt, lonr(l, r));
     return 1;
 }
@@ -126,7 +113,6 @@ int plat_cb(int argc, char *argv[])
     double l;			/* Latitude value from command line */
     char *fmt;
 
-    /* Ensure minimum command line */
     if (argc < 2) {
 	err_append("Usage: ");
 	err_append(cmd);
