@@ -8,7 +8,7 @@
 
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.14 $ $Date: 2009/07/07 20:24:33 $
+   $Revision: 1.15 $ $Date: 2009/07/11 18:01:38 $
  */
 
 #include <math.h>
@@ -42,9 +42,9 @@ double gcdist(const double lat1, const double lon1,
     /* Reference: R.W. Sinnott, "Virtues of the Haversine", Sky and Telescope,
        vol. 68, no. 2, 1984, p. 159
        cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1 */
-    sin_dlon_2 = sin(0.5 * (lon2 - lon1));
-    sin_dlat_2 = sin(0.5 * (lat2 - lat1));
+    sin_dlon_2 = sin(0.5 * RADPERDEG * (lon2 - lon1));
+    sin_dlat_2 = sin(0.5 * RADPERDEG * (lat2 - lat1));
     a = sqrt(sin_dlat_2 * sin_dlat_2
 	+ cos(lat1) * cos(lat2) * sin_dlon_2 * sin_dlon_2);
-    return a > 1.0 ? M_PI : 2.0 * asin(a);
+    return DEGPERRAD * (a > 1.0 ? M_PI : 2.0 * asin(a));
 }
