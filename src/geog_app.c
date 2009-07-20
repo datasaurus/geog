@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.14 $ $Date: 2009/07/10 22:02:14 $
+   $Revision: 1.15 $ $Date: 2009/07/20 20:00:51 $
  */
 
 #include <stdlib.h>
@@ -21,12 +21,13 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 2
+#define NCMD 3
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
 callback lonr_cb;
 callback plat_cb;
+callback gcdist_cb;
 
 int main(int argc, char *argv[])
 {
@@ -34,8 +35,8 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"lonr", "plat"};
-    callback *cb1v[NCMD] = {lonr_cb, plat_cb};
+    char *cmd1v[NCMD] = {"lonr", "plat", "gcdist"};
+    callback *cb1v[NCMD] = {lonr_cb, plat_cb, gcdist_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -138,5 +139,60 @@ int plat_cb(int argc, char *argv[])
 
     /* Send result */
     printf(fmt, plat(l));
+    return 1;
+}
+
+int gcdist_cb(int argc, char *argv[])
+{
+    char *lat1_s, *lon1_s, *lat2_s, *lon2_s;
+    double lat1, lon1, lat2, lon2;
+    char *fmt;
+
+    if (argc < 5) {
+	err_append("Usage: ");
+	err_append(cmd);
+	err_append(" ");
+	err_append(cmd1);
+	err_append("[-f format] lat1 lon1 lat2 lon2\n");
+	return 0;
+    }
+    fmt = "%lf\n";
+    if (strcmp(argv[1], "-f") == 0) {
+	fmt = stresc(argv[2]);
+	lat1_s = argv[3];
+	lon1_s = argv[4];
+	lat2_s = argv[5];
+	lon2_s = argv[6];
+    } else {
+	lat1_s = argv[1];
+	lon1_s = argv[2];
+	lat2_s = argv[3];
+	lon2_s = argv[4];
+    }
+
+    /* Get coordinates from command line arguments */
+    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
+	err_append("Expected float value for lat1, got ");
+	err_append(lat1_s);
+	return 0;
+    }
+    if (sscanf(lon1_s, "%lf", &lon1) != 1) {
+	err_append("Expected float value for lon1, got ");
+	err_append(lon1_s);
+	return 0;
+    }
+    if (sscanf(lat2_s, "%lf", &lat2) != 1) {
+	err_append("Expected float value for lat2, got ");
+	err_append(lat2_s);
+	return 0;
+    }
+    if (sscanf(lon2_s, "%lf", &lon2) != 1) {
+	err_append("Expected float value for lon2, got ");
+	err_append(lon2_s);
+	return 0;
+    }
+
+    /* Send result */
+    printf(fmt, gcdist(lat1, lon1, lat2, lon2));
     return 1;
 }
