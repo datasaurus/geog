@@ -7,7 +7,7 @@
   
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.16 $ $Date: 2009/07/20 20:31:58 $
+   $Revision: 1.17 $ $Date: 2009/07/20 20:32:32 $
  */
 
 #include <stdlib.h>
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
      * callback from cb1v. */
     for (i = 0; i < NCMD; i++) {
 	if (strcmp(cmd1v[i], cmd1) == 0) {
-	    rslt = (cb1v[i])(argc - 1, argv + 1);
+	    rslt = (cb1v[i])(argc, argv);
 	    if ( !rslt ) {
 		fprintf(stderr, "%s %s failed.\n", cmd, cmd1);
 		fprintf(stderr, "%s\n", err_get());
@@ -77,7 +77,7 @@ int lonr_cb(int argc, char *argv[])
     double l, r;		/* Values from command line */
     char *fmt;			/* Format for printing result */
 
-    if (argc < 3) {
+    if (argc < 4) {
 	err_append("Usage: ");
 	err_append(cmd);
 	err_append(" ");
@@ -86,13 +86,13 @@ int lonr_cb(int argc, char *argv[])
 	return 0;
     }
     fmt = "%lf\n";
-    if (strcmp(argv[1], "-f") == 0) {
-	fmt = stresc(argv[2]);
-	l_s = argv[3];
-	r_s = argv[4];
+    if (strcmp(argv[2], "-f") == 0) {
+	fmt = stresc(argv[3]);
+	l_s = argv[4];
+	r_s = argv[5];
     } else {
-	l_s = argv[1];
-	r_s = argv[2];
+	l_s = argv[2];
+	r_s = argv[3];
     }
     if (sscanf(l_s, "%lf", &l) != 1) {
 	err_append("Expected float value for longitude, got ");
@@ -114,7 +114,7 @@ int plat_cb(int argc, char *argv[])
     double l;			/* Latitude value from command line */
     char *fmt;
 
-    if (argc < 2) {
+    if (argc < 3) {
 	err_append("Usage: ");
 	err_append(cmd);
 	err_append(" ");
@@ -123,11 +123,11 @@ int plat_cb(int argc, char *argv[])
 	return 0;
     }
     fmt = "%lf\n";
-    if (strcmp(argv[1], "-f") == 0) {
-	fmt = stresc(argv[2]);
-	l_s = argv[3];
+    if (strcmp(argv[2], "-f") == 0) {
+	fmt = stresc(argv[3]);
+	l_s = argv[4];
     } else {
-	l_s = argv[1];
+	l_s = argv[2];
     }
 
     /* Get latitude value from command line argument */
@@ -148,7 +148,7 @@ int gcdist_cb(int argc, char *argv[])
     double lat1, lon1, lat2, lon2;
     char *fmt;
 
-    if (argc < 5) {
+    if (argc < 6) {
 	err_append("Usage: ");
 	err_append(cmd);
 	err_append(" ");
@@ -157,17 +157,17 @@ int gcdist_cb(int argc, char *argv[])
 	return 0;
     }
     fmt = "%lf\n";
-    if (strcmp(argv[1], "-f") == 0) {
-	fmt = stresc(argv[2]);
-	lat1_s = argv[3];
-	lon1_s = argv[4];
-	lat2_s = argv[5];
-	lon2_s = argv[6];
+    if (strcmp(argv[2], "-f") == 0) {
+	fmt = stresc(argv[3]);
+	lat1_s = argv[4];
+	lon1_s = argv[5];
+	lat2_s = argv[6];
+	lon2_s = argv[7];
     } else {
-	lat1_s = argv[1];
-	lon1_s = argv[2];
-	lat2_s = argv[3];
-	lon2_s = argv[4];
+	lat1_s = argv[2];
+	lon1_s = argv[3];
+	lat2_s = argv[4];
+	lon2_s = argv[5];
     }
 
     /* Get coordinates from command line arguments */
