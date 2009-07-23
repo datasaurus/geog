@@ -8,7 +8,7 @@
 
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.15 $ $Date: 2009/07/11 18:01:38 $
+   $Revision: 1.16 $ $Date: 2009/07/20 20:32:56 $
  */
 
 #include <math.h>
@@ -32,7 +32,7 @@ double plat(const double l)
 	: l1;
 }
 
-/* Great circle distance between two points */
+/* Great circle distance in degrees between two points */
 double gcdist(const double lat1, const double lon1,
 	const double lat2, const double lon2)
 {
@@ -47,4 +47,21 @@ double gcdist(const double lat1, const double lon1,
     a = sqrt(sin_dlat_2 * sin_dlat_2
 	+ cos(lat1) * cos(lat2) * sin_dlon_2 * sin_dlon_2);
     return DEGPERRAD * (a > 1.0 ? M_PI : 2.0 * asin(a));
+}
+
+/* Great circle distance in radians between two points */
+double gcdistr(const double lat1, const double lon1,
+	const double lat2, const double lon2)
+{
+    double sin_dlon_2, sin_dlat_2;
+    double a;
+
+    /* Reference: R.W. Sinnott, "Virtues of the Haversine", Sky and Telescope,
+       vol. 68, no. 2, 1984, p. 159
+       cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1 */
+    sin_dlon_2 = sin(0.5 * (lon2 - lon1));
+    sin_dlat_2 = sin(0.5 * (lat2 - lat1));
+    a = sqrt(sin_dlat_2 * sin_dlat_2
+	+ cos(lat1) * cos(lat2) * sin_dlon_2 * sin_dlon_2);
+    return (a > 1.0 ? M_PI : 2.0 * asin(a));
 }
