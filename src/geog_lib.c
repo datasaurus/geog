@@ -4,11 +4,11 @@
  -	manage geographic data.  Re. geog_lib (3).
  -
    Copyright (c) 2008 Gordon D. Carrie
-   Licensed under the Open Software License version 3.0
+   All rights reserved.
 
    Please send feedback to dev0@trekix.net
 
-   $Revision: 1.16 $ $Date: 2009/07/20 20:32:56 $
+   $Revision: 1.17 $ $Date: 2009/07/23 22:46:21 $
  */
 
 #include <math.h>
