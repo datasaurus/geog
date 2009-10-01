@@ -1,14 +1,15 @@
 /*
- - geog_lib.c --
- - 	This file defines functions that do geography calculations and
- -	manage geographic data.  Re. geog_lib (3).
- -
-   Copyright (c) 2008 Gordon D. Carrie
-   All rights reserved.
-
-   Please send feedback to dev0@trekix.net
-
-   $Revision: 1.17 $ $Date: 2009/07/23 22:46:21 $
+   -	geog_lib.c --
+   -		This file defines functions that do geography
+   -		calculations and manage geographic data.
+   -		See geog_lib (3).
+   -
+   .	Copyright (c) 2008 Gordon D. Carrie
+   .	All rights reserved.
+   .
+   .	Please send feedback to dev0@trekix.net
+   .
+   .	$Revision: 1.18 $ $Date: 2009/09/25 21:33:12 $
  */
 
 #include <math.h>

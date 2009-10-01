@@ -1,13 +1,13 @@
 /*
- - geog_app.c --
- - 	This file defines an application that does geography calculations.
- -
-   Copyright (c) 2008 Gordon D. Carrie
-   All rights reserved.
-  
-   Please send feedback to dev0@trekix.net
-
-   $Revision: 1.18 $ $Date: 2009/07/20 20:37:36 $
+   -	geog_app.c --
+   -		This file defines an application that does geography calculations.
+   -
+   .	Copyright (c) 2008 Gordon D. Carrie
+   .	All rights reserved.
+   .
+   .	Please send feedback to dev0@trekix.net
+   .
+   .	$Revision: 1.19 $ $Date: 2009/09/25 21:33:12 $
  */
 
 #include <stdlib.h>
