@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.13 $ $Date: 2009/09/25 21:33:12 $
+   .	$Revision: 1.14 $ $Date: 2009/10/01 22:15:22 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -18,9 +18,9 @@
 #define RADPERDEG 0.017453292519943294892
 #define DEGPERRAD 57.29577951308232088
 
-double lonr(const double, const double);
-double plat(const double);
-double gcdist(const double, const double, const double, const double);
-double gcdistr(const double, const double, const double, const double);
+double LonToRef(const double, const double);
+double PrincLat(const double);
+double GCDist(const double, const double, const double, const double);
+double GCDistR(const double, const double, const double, const double);
 
 #endif

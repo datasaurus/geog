@@ -9,14 +9,14 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.18 $ $Date: 2009/09/25 21:33:12 $
+   .	$Revision: 1.19 $ $Date: 2009/10/01 22:15:22 $
  */
 
 #include <math.h>
 #include "geog_lib.h"
 
 /* Put l into [r - 180.0, r + 180.0) */
-double lonr(const double l, const double r)
+double LonToRef(const double l, const double r)
 {
     double l1 = fmod(l, 360.0);
     l1 = (l1 < r - 180.0) ? l1 + 360.0 : (l1 >= r + 180.0) ? l1 - 360.0 : l1;
@@ -24,7 +24,7 @@ double lonr(const double l, const double r)
 }
 
 /* Go l degrees north of equator */
-double plat(const double l)
+double PrincLat(const double l)
 {
     double l1 = fmod(l, 360.0);
     l1 += (l1 < 0.0) ? 360.0 : 0.0;
@@ -34,7 +34,7 @@ double plat(const double l)
 }
 
 /* Great circle distance in degrees between two points */
-double gcdist(const double lat1, const double lon1,
+double GCDist(const double lat1, const double lon1,
 	const double lat2, const double lon2)
 {
     double sin_dlon_2, sin_dlat_2;
@@ -51,7 +51,7 @@ double gcdist(const double lat1, const double lon1,
 }
 
 /* Great circle distance in radians between two points */
-double gcdistr(const double lat1, const double lon1,
+double GCDistR(const double lat1, const double lon1,
 	const double lat2, const double lon2)
 {
     double sin_dlon_2, sin_dlat_2;
