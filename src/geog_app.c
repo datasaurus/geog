@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.20 $ $Date: 2009/10/01 22:15:22 $
+   .	$Revision: 1.21 $ $Date: 2009/10/07 17:06:47 $
  */
 
 #include <stdlib.h>
@@ -26,17 +26,21 @@ char *cmd, *cmd1;
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
 callback lonr_cb;
-callback plat_cb;
+callback latn_cb;
 callback gcdist_cb;
+
+/* If true, use degrees instead of radians */
+int use_deg = 0;
 
 int main(int argc, char *argv[])
 {
+    char *ang_u;	/* Angle unit */
     int i;		/* Index for subcommand in argv[1] */
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"lonr", "plat", "gcdist"};
-    callback *cb1v[NCMD] = {lonr_cb, plat_cb, gcdist_cb};
+    char *cmd1v[NCMD] = {"lonr", "latn", "gcdist"};
+    callback *cb1v[NCMD] = {lonr_cb, latn_cb, gcdist_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -44,6 +48,18 @@ int main(int argc, char *argv[])
 	exit(1);
     }
     cmd1 = argv[1];
+
+    /* Check for angle unit */
+    if ((ang_u = getenv("ANGLE_UNIT")) != NULL) {
+	if (strcmp(ang_u, "DEGREE") == 0) {
+	    use_deg = 1;
+	} else if (strcmp(ang_u, "RADIAN") == 0) {
+	    use_deg = 0;
+	} else {
+	    fprintf(stderr, "%s: Unknown angle unit %s.\n", cmd, ang_u);
+	    exit(1);
+	}
+    }
 
     /* Search cmd1v for cmd1.  When match is found, evaluate the associated
      * callback from cb1v. */
@@ -104,11 +120,15 @@ int lonr_cb(int argc, char *argv[])
 	Err_Append(r_s);
 	return 0;
     }
-    printf(fmt, LonToRef(l, r));
+    if (use_deg) {
+	l *= PI / 180.0;
+	r *= PI / 180.0;
+    }
+    printf(fmt, (use_deg ? 180 / PI : 1.0) * LonToRef(l, r));
     return 1;
 }
 
-int plat_cb(int argc, char *argv[])
+int latn_cb(int argc, char *argv[])
 {
     char *l_s;			/* String from command line */
     double l;			/* Latitude value from command line */
@@ -136,9 +156,12 @@ int plat_cb(int argc, char *argv[])
 	Err_Append(l_s);
 	return 0;
     }
+    if (use_deg) {
+	l *= PI / 180.0;
+    }
 
     /* Send result */
-    printf(fmt, PrincLat(l));
+    printf(fmt, (use_deg ? 180 / PI : 1.0) * LatN(l));
     return 1;
 }
 
@@ -191,8 +214,14 @@ int gcdist_cb(int argc, char *argv[])
 	Err_Append(lon2_s);
 	return 0;
     }
+    if (use_deg) {
+	lat1 *= PI / 180.0;
+	lon1 *= PI / 180.0;
+	lat2 *= PI / 180.0;
+	lon2 *= PI / 180.0;
+    }
 
     /* Send result */
-    printf(fmt, GCDist(lat1, lon1, lat2, lon2));
+    printf(fmt, (use_deg ? 180 / PI : 1.0) * GCDistR(lat1, lon1, lat2, lon2));
     return 1;
 }

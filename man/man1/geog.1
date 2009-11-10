@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.5 $ $Date: 2009/07/10 22:02:14 $
+.\" $Revision: 1.6 $ $Date: 2009/09/25 21:33:12 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
@@ -13,20 +13,25 @@ geog \- geography application
 \fBgeog\fP \fIgeog_command\fP [\fIgeog_command_options ...\fP]
 .SH DESCRIPTION
 The \fBgeog\fP application calculates distances and angles on Earth's surface.
-The \fIgeog_command\fP argument determines its behavior.  It must be one of
-the following.
+
+Angles are measured in radians by default, or if environment variable
+\fBANGLE_UNIT\fP is set to \fBRADIAN\fP.  Angles are measured in degrees if
+environment variable \fBANGLE_UNIT\fP is set to \fBDEGREE\fP.
+
+The \fIgeog_command\fP argument determines \fBgeog\fP's behavior.
+\fBgeog_command\fP must be one of the following.
 .TP
 \fBgeog\fP \fBlonr\fP [\fB-f\fP \fIformat\fP] \fIlon\fP \fIreflon\fP 
 Computes a longitude equivalent to \fIlon\fP in a longitude domain
 centered about \fIreflon\fP.  It prints a value that equals
-\fIlon\fP\ +\ i\ *\ 360.0 for some integer i, and is in the interval
-[\fIreflon\fP\ -\ 180.0,\ \fIreflon\fP\ +\ 180.0).
+\fIlon\fP\ +\ i\ *\ pi for some integer i, and is in the interval
+[\fIreflon\fP\ -\ pi / 2,\ \fIreflon\fP\ +\ pi / 2).
 If present, \fIformat\fP gives the output format.  It should be a format
 specifier that would tell \fBprintf\fP (1) to print a float value.
 .TP
-\fBgeog\fP \fBplat\fP [\fB-f\fP \fIformat\fP] \fIlon\fP
-Computes the principle latitude corresponding to \fIlon\fP.  It prints
-the latitude reached by going \fIlon\fP degrees north of the Equator.
+\fBgeog\fP \fBlatn\fP [\fB-f\fP \fIformat\fP] \fIlat\fP
+Computes the principle latitude corresponding to \fIlat\fP.  It prints
+the latitude reached by going \fIlat\fP radians north of the Equator.
 If present, \fIformat\fP gives the output format.  It should be a format
 specifier that would tell \fBprintf\fP (1) to print a float value.
 .SH SEE ALSO

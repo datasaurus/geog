@@ -4,33 +4,28 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.8 $ $Date: 2009/10/01 21:18:10 $
+.\" $Revision: 1.9 $ $Date: 2009/10/07 17:06:47 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
-LonToRef, PrincLat, GCDist \- geography functions
+LonToRef, LatN, GCDist \- geography functions
 .SH SYNOPSIS
 .nf
 \fB#include "geog_lib.h"\fP
 \fBdouble LonToRef(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
-\fBdouble PrincLat(const double\fP \fIl\fP\fB);\fP
-\fBdouble GCDist(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
-	\fBconst double\fP \fIlat2\fP, \fBconst double\fP \fIlon2\fP);
+\fBdouble LatN(const double\fP \fIl\fP\fB);\fP
 \fBdouble GCDistR(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
 	\fBconst double\fP \fIlat2\fP, \fBconst double\fP \fIlon2\fP);
 .fi
 .SH DESCRIPTION
-Unless otherwise stated, longitudes and latitudes are expressed in degrees.
+Unless otherwise stated, longitudes and latitudes are expressed in radians.
 
 \fBLonToRef\fP computes a longitude equivalent to \fIl\fP in a longitude domain
 centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ 360.0 for some
 integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
 
-\fBPrincLat\fP computes the principle latitude corresponding to \fIl\fP.  Return
-value is the latitude reached by going \fIl\fP degrees north of the Equator.
-
-\fBGCDist\fP returns the great circle distance in degrees between points
-(\fIlat1\fP,\ \fIlon1\fP) and (\fIlat2\fP,\ \fIlon2\fP).
+\fBLatN\fP computes the principle latitude corresponding to \fIl\fP.  Return
+value is the latitude reached by going \fIl\fP radians north of the Equator.
 
 \fBGCDistR\fP returns the great circle distance in radians between points
 (\fIlat1\fP,\ \fIlon1\fP) and (\fIlat2\fP,\ \fIlon2\fP) where
