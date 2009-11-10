@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.21 $ $Date: 2009/10/07 17:06:47 $
+   .	$Revision: 1.22 $ $Date: 2009/11/10 20:01:55 $
  */
 
 #include <stdlib.h>
@@ -21,13 +21,14 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 3
+#define NCMD 4
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
 callback lonr_cb;
 callback latn_cb;
 callback gcdist_cb;
+callback step_cb;
 
 /* If true, use degrees instead of radians */
 int use_deg = 0;
@@ -39,8 +40,8 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"lonr", "latn", "gcdist"};
-    callback *cb1v[NCMD] = {lonr_cb, latn_cb, gcdist_cb};
+    char *cmd1v[NCMD] = {"lonr", "latn", "gcdist", "step"};
+    callback *cb1v[NCMD] = {lonr_cb, latn_cb, gcdist_cb, step_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -121,10 +122,10 @@ int lonr_cb(int argc, char *argv[])
 	return 0;
     }
     if (use_deg) {
-	l *= PI / 180.0;
-	r *= PI / 180.0;
+	l *= M_PI / 180.0;
+	r *= M_PI / 180.0;
     }
-    printf(fmt, (use_deg ? 180 / PI : 1.0) * LonToRef(l, r));
+    printf(fmt, (use_deg ? 180 / M_PI : 1.0) * LonToRef(l, r));
     return 1;
 }
 
@@ -157,11 +158,11 @@ int latn_cb(int argc, char *argv[])
 	return 0;
     }
     if (use_deg) {
-	l *= PI / 180.0;
+	l *= M_PI / 180.0;
     }
 
     /* Send result */
-    printf(fmt, (use_deg ? 180 / PI : 1.0) * LatN(l));
+    printf(fmt, (use_deg ? 180 / M_PI : 1.0) * LatN(l));
     return 1;
 }
 
@@ -215,13 +216,77 @@ int gcdist_cb(int argc, char *argv[])
 	return 0;
     }
     if (use_deg) {
-	lat1 *= PI / 180.0;
-	lon1 *= PI / 180.0;
-	lat2 *= PI / 180.0;
-	lon2 *= PI / 180.0;
+	lat1 *= M_PI / 180.0;
+	lon1 *= M_PI / 180.0;
+	lat2 *= M_PI / 180.0;
+	lon2 *= M_PI / 180.0;
     }
 
     /* Send result */
-    printf(fmt, (use_deg ? 180 / PI : 1.0) * GCDistR(lat1, lon1, lat2, lon2));
+    printf(fmt, (use_deg ? 180 / M_PI : 1.0) * GCDistR(lat1, lon1, lat2, lon2));
+    return 1;
+}
+
+int step_cb(int argc, char *argv[])
+{
+    char *lat1_s, *lon1_s, *dirn_s, *dist_s;
+    double lat1, lon1, dirn, dist, lat2, lon2;
+    char *fmt;
+
+    if (argc < 6) {
+	Err_Append("Usage: ");
+	Err_Append(cmd);
+	Err_Append(" ");
+	Err_Append(cmd1);
+	Err_Append("[-f format] lat lon direction distance\n");
+	return 0;
+    }
+    fmt = "%lf %lf\n";
+    if (strcmp(argv[2], "-f") == 0) {
+	fmt = Str_Esc(argv[3]);
+	lat1_s = argv[4];
+	lon1_s = argv[5];
+	dirn_s = argv[6];
+	dist_s = argv[7];
+    } else {
+	lat1_s = argv[2];
+	lon1_s = argv[3];
+	dirn_s = argv[4];
+	dist_s = argv[5];
+    }
+
+    /* Get values from command line arguments */
+    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
+	Err_Append("Expected float value for lat1, got ");
+	Err_Append(lat1_s);
+	return 0;
+    }
+    if (sscanf(lon1_s, "%lf", &lon1) != 1) {
+	Err_Append("Expected float value for lon1, got ");
+	Err_Append(lon1_s);
+	return 0;
+    }
+    if (sscanf(dirn_s, "%lf", &dirn) != 1) {
+	Err_Append("Expected float value for azimuth, got ");
+	Err_Append(dirn_s);
+	return 0;
+    }
+    if (sscanf(dist_s, "%lf", &dist) != 1) {
+	Err_Append("Expected float value for range, got ");
+	Err_Append(dist_s);
+	return 0;
+    }
+    if (use_deg) {
+	lat1 *= M_PI / 180.0;
+	lon1 *= M_PI / 180.0;
+	dirn *= M_PI / 180.0;
+	dist *= M_PI / 180.0;
+    }
+
+    /* Send result */
+    GeogStep(lon1, lat1, dirn, dist, &lon2, &lat2);
+    lon2 *= (use_deg ? 180 / M_PI : 1.0);
+    lat2 *= (use_deg ? 180 / M_PI : 1.0);
+    printf(fmt, lon2, lat2);
     return 1;
 }

@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.9 $ $Date: 2009/10/07 17:06:47 $
+.\" $Revision: 1.10 $ $Date: 2009/11/10 20:01:55 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
@@ -16,20 +16,27 @@ LonToRef, LatN, GCDist \- geography functions
 \fBdouble LatN(const double\fP \fIl\fP\fB);\fP
 \fBdouble GCDistR(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
 	\fBconst double\fP \fIlat2\fP, \fBconst double\fP \fIlon2\fP);
+\fBvoid GeogStep(double\fP \fIlon0\fP, \fBdouble\fP \fIlat0\fP, \fBdouble\fP \fIdirn\fP, \fBdouble\fP \fIdist\fP,
+	\fBdouble\fP *lon1\fP, \fBdouble\fP *\fIlat1\fP)
 .fi
 .SH DESCRIPTION
 Unless otherwise stated, longitudes and latitudes are expressed in radians.
 
-\fBLonToRef\fP computes a longitude equivalent to \fIl\fP in a longitude domain
+\fBLonToRef\fP returns a longitude equivalent to \fIl\fP in a longitude domain
 centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ 360.0 for some
 integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
 
-\fBLatN\fP computes the principle latitude corresponding to \fIl\fP.  Return
+\fBLatN\fP returns the principle latitude corresponding to \fIl\fP.  Return
 value is the latitude reached by going \fIl\fP radians north of the Equator.
 
 \fBGCDistR\fP returns the great circle distance in radians between points
 (\fIlat1\fP,\ \fIlon1\fP) and (\fIlat2\fP,\ \fIlon2\fP) where
 \fIlat1\fP,\ \fIlon1\fP \fIlat2\fP,\ and \fIlon2\fP must be given in radians.
+
+\fBGeogStep\fP computes the longitude and latitude of the point in direction
+\fIdirn\fP and distance \fIdist\fP along a great circle from point
+(\fIlon0\fP,\ \fIlat0\fP).  It places the longitude and latitude of the destination
+point at addresses \fIlon1\fP and \fIlat1\fP respectively.
 .SH SEE ALSO
 \fBgeog\fP (1)
 .SH AUTHOR

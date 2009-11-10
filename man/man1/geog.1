@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.6 $ $Date: 2009/09/25 21:33:12 $
+.\" $Revision: 1.7 $ $Date: 2009/11/10 20:01:55 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
@@ -34,6 +34,12 @@ Computes the principle latitude corresponding to \fIlat\fP.  It prints
 the latitude reached by going \fIlat\fP radians north of the Equator.
 If present, \fIformat\fP gives the output format.  It should be a format
 specifier that would tell \fBprintf\fP (1) to print a float value.
+.TP
+\fBgeog\fP \fBstep\fP [\fB-f\fP \fIformat\fP] \fIlon\fP \fIlat\fP \fIdir\fP \fIdist\fP
+Computes the longitude and latitude of the point in direction \fIdir\fP and
+distance \fIdist\fP along a great circle from point (\fIlon\fP,\ \fIlat\fP).
+If present, \fIformat\fP gives the output format.  It should be a format
+specifier that would tell \fBprintf\fP (1) to print two float values.
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
 .SH AUTHOR
