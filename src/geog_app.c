@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.22 $ $Date: 2009/11/10 20:01:55 $
+   .	$Revision: 1.23 $ $Date: 2009/11/10 23:06:18 $
  */
 
 #include <stdlib.h>
@@ -238,32 +238,32 @@ int step_cb(int argc, char *argv[])
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append("[-f format] lat lon direction distance\n");
+	Err_Append("[-f format] lon lat direction distance\n");
 	return 0;
     }
     fmt = "%lf %lf\n";
     if (strcmp(argv[2], "-f") == 0) {
 	fmt = Str_Esc(argv[3]);
-	lat1_s = argv[4];
-	lon1_s = argv[5];
+	lon1_s = argv[4];
+	lat1_s = argv[5];
 	dirn_s = argv[6];
 	dist_s = argv[7];
     } else {
-	lat1_s = argv[2];
-	lon1_s = argv[3];
+	lon1_s = argv[2];
+	lat1_s = argv[3];
 	dirn_s = argv[4];
 	dist_s = argv[5];
     }
 
     /* Get values from command line arguments */
-    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
-	Err_Append("Expected float value for lat1, got ");
-	Err_Append(lat1_s);
-	return 0;
-    }
     if (sscanf(lon1_s, "%lf", &lon1) != 1) {
 	Err_Append("Expected float value for lon1, got ");
 	Err_Append(lon1_s);
+	return 0;
+    }
+    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
+	Err_Append("Expected float value for lat1, got ");
+	Err_Append(lat1_s);
 	return 0;
     }
     if (sscanf(dirn_s, "%lf", &dirn) != 1) {
