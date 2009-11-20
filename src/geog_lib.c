@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.21 $ $Date: 2009/11/10 20:01:55 $
+   .	$Revision: 1.22 $ $Date: 2009/11/10 23:06:18 $
  */
 
 #include <math.h>
@@ -50,31 +50,31 @@ double GCDistR(const double lat1, const double lon1,
 }
 
 /* Compute lat-lon at given distance and direction from a point.  */
-void GeogStep(double lon0, double lat0, double dirn, double dist,
-	double *lon1, double *lat1)
+void GeogStep(double lon1, double lat1, double dirn, double dist,
+	double *lon2, double *lat2)
 {
-    double cos_dist, sin_dist, cos_dir, sin_dir;
-    double cos_lat, cos_lon, sin_lon, sin_lat;
-    double x, y, z, h_1, h_2, dh;
+    double sin_lat1, cos_lat1, sin_lat2, cos_lat2,
+	   sin_dist, cos_dist, sin_dirn, cos_dirn,
+	   sin_dlon, cos_dlon, dlon;
 
-    cos_dist = cos(dist);
+    /*
+       cf.
+       Smart, W. M., "Textbook on Spherical Astronomy",
+       Sixth edition revised by R. M. Green.
+       Cambridge University Press, Cambridge. 1977.
+     */
+
+    sin_lat1 = sin(lat1);
+    cos_lat1 = cos(lat1);
     sin_dist = sin(dist);
-    cos_dir = cos(dirn);
-    sin_dir = sin(dirn);
-
-    cos_lat = cos(lat0);
-    cos_lon = cos(lon0);
-    sin_lon = sin(lon0);
-    sin_lat = sin(lat0);
-    x = cos_dist * cos_lon * cos_lat - sin_dir * sin_dist * sin_lon 
-	- cos_lon * cos_dir * sin_dist * sin_lat;
-    y = sin_dir * cos_lon * sin_dist + cos_dist * cos_lat * sin_lon 
-	- cos_dir * sin_dist * sin_lon * sin_lat;
-    *lon1 = atan2(y, x);
-
-    z = cos_lat * cos_dir * sin_dist + cos_dist * sin_lat;
-    h_1 = cos_dist * cos_lat - cos_dir * sin_dist * sin_lat;
-    h_2 = sin_dir * sin_dist;
-    dh = h_1 * h_1 + h_2 * h_2;
-    *lat1 = (dh == 0.0) ? (z > 0 ? M_PI_2 : -M_PI_2) : atan(z / sqrt(dh));
+    cos_dist = cos(dist);
+    sin_dirn = sin(dirn);
+    cos_dirn = cos(dirn);
+    sin_lat2 = sin_lat1 * cos_dist + cos_lat1 * sin_dist * cos_dirn;
+    *lat2 = asin(sin_lat2);
+    cos_lat2 = sqrt(1 - sin_lat2 * sin_lat2);
+    sin_dlon = sin_dist * cos_lat2 / sin_dirn;
+    cos_dlon = (cos_dist - sin_lat1 * sin_lat2) / (cos_lat1 * cos_lat2);
+    dlon = atan2(sin_dlon, cos_dlon);
+    *lon2 = LonToRef(lon1 + dlon, 0.0);
 }
