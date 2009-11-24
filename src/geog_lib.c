@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.22 $ $Date: 2009/11/10 23:06:18 $
+   .	$Revision: 1.23 $ $Date: 2009/11/20 23:00:09 $
  */
 
 #include <math.h>
@@ -39,9 +39,12 @@ double GCDistR(const double lat1, const double lon1,
     double sin_dlon_2, sin_dlat_2;
     double a;
 
-    /* Reference: R.W. Sinnott, "Virtues of the Haversine", Sky and Telescope,
-       vol. 68, no. 2, 1984, p. 159
-       cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1 */
+    /*
+       Reference -- R.W. Sinnott, "Virtues of the Haversine",
+       Sky and Telescope, vol. 68, no. 2, 1984, p. 159
+       cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1
+     */
+
     sin_dlon_2 = sin(0.5 * (lon2 - lon1));
     sin_dlat_2 = sin(0.5 * (lat2 - lat1));
     a = sqrt(sin_dlat_2 * sin_dlat_2
@@ -53,15 +56,12 @@ double GCDistR(const double lat1, const double lon1,
 void GeogStep(double lon1, double lat1, double dirn, double dist,
 	double *lon2, double *lat2)
 {
-    double sin_lat1, cos_lat1, sin_lat2, cos_lat2,
-	   sin_dist, cos_dist, sin_dirn, cos_dirn,
-	   sin_dlon, cos_dlon, dlon;
+    double sin_lat1, cos_lat1, sin_dist, cos_dist, sin_dirn, cos_dirn, dlon;
 
     /*
-       cf.
-       Smart, W. M., "Textbook on Spherical Astronomy",
+       Reference -- Smart, W. M., "Textbook on Spherical Astronomy",
        Sixth edition revised by R. M. Green.
-       Cambridge University Press, Cambridge. 1977.
+       Cambridge University Press, Cambridge, 1977.
      */
 
     sin_lat1 = sin(lat1);
@@ -70,11 +70,8 @@ void GeogStep(double lon1, double lat1, double dirn, double dist,
     cos_dist = cos(dist);
     sin_dirn = sin(dirn);
     cos_dirn = cos(dirn);
-    sin_lat2 = sin_lat1 * cos_dist + cos_lat1 * sin_dist * cos_dirn;
-    *lat2 = asin(sin_lat2);
-    cos_lat2 = sqrt(1 - sin_lat2 * sin_lat2);
-    sin_dlon = sin_dist * cos_lat2 / sin_dirn;
-    cos_dlon = (cos_dist - sin_lat1 * sin_lat2) / (cos_lat1 * cos_lat2);
-    dlon = atan2(sin_dlon, cos_dlon);
+    *lat2 = asin(sin_lat1 * cos_dist + cos_lat1 * sin_dist * cos_dirn);
+    dlon = atan2(sin_dist * sin_dirn,
+	    -sin_lat1 * sin_dist * cos_dirn + cos_lat1 * cos_dist);
     *lon2 = LonToRef(lon1 + dlon, 0.0);
 }
