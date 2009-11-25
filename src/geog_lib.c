@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.23 $ $Date: 2009/11/20 23:00:09 $
+   .	$Revision: 1.24 $ $Date: 2009/11/24 18:20:45 $
  */
 
 #include <math.h>
@@ -56,7 +56,7 @@ double GCDistR(const double lat1, const double lon1,
 void GeogStep(double lon1, double lat1, double dirn, double dist,
 	double *lon2, double *lat2)
 {
-    double sin_lat1, cos_lat1, sin_dist, cos_dist, sin_dirn, cos_dirn, dlon;
+    double sin_dist, sin_dirn, cos_dirn, dlon, a;
 
     /*
        Reference -- Smart, W. M., "Textbook on Spherical Astronomy",
@@ -64,14 +64,13 @@ void GeogStep(double lon1, double lat1, double dirn, double dist,
        Cambridge University Press, Cambridge, 1977.
      */
 
-    sin_lat1 = sin(lat1);
-    cos_lat1 = cos(lat1);
     sin_dist = sin(dist);
-    cos_dist = cos(dist);
     sin_dirn = sin(dirn);
     cos_dirn = cos(dirn);
-    *lat2 = asin(sin_lat1 * cos_dist + cos_lat1 * sin_dist * cos_dirn);
-    dlon = atan2(sin_dist * sin_dirn,
-	    -sin_lat1 * sin_dist * cos_dirn + cos_lat1 * cos_dist);
+    a = 0.5 * (sin(lat1 + dist) * (1.0 + cos_dirn)
+	    + sin(lat1 - dist) * (1.0 - cos_dirn));
+    *lat2 = (a > 1.0) ? M_PI_2 : (a < -1.0) ? -M_PI_2 : asin(a);
+    dlon = atan2(sin_dist * sin_dirn, 0.5 * (cos(lat1 + dist) * (1 + cos_dirn)
+		+ cos(lat1 - dist) * (1 - cos_dirn)));
     *lon2 = LonToRef(lon1 + dlon, 0.0);
 }
