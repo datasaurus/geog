@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.7 $ $Date: 2009/11/10 20:01:55 $
+.\" $Revision: 1.8 $ $Date: 2009/11/10 23:06:18 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
@@ -21,25 +21,23 @@ environment variable \fBANGLE_UNIT\fP is set to \fBDEGREE\fP.
 The \fIgeog_command\fP argument determines \fBgeog\fP's behavior.
 \fBgeog_command\fP must be one of the following.
 .TP
-\fBgeog\fP \fBlonr\fP [\fB-f\fP \fIformat\fP] \fIlon\fP \fIreflon\fP 
+\fBgeog\fP \fBlonr\fP \fIlon\fP \fIreflon\fP 
 Computes a longitude equivalent to \fIlon\fP in a longitude domain
 centered about \fIreflon\fP.  It prints a value that equals
 \fIlon\fP\ +\ i\ *\ pi for some integer i, and is in the interval
 [\fIreflon\fP\ -\ pi / 2,\ \fIreflon\fP\ +\ pi / 2).
-If present, \fIformat\fP gives the output format.  It should be a format
-specifier that would tell \fBprintf\fP (1) to print a float value.
 .TP
-\fBgeog\fP \fBlatn\fP [\fB-f\fP \fIformat\fP] \fIlat\fP
+\fBgeog\fP \fBlatn\fP \fIlat\fP
 Computes the principle latitude corresponding to \fIlat\fP.  It prints
 the latitude reached by going \fIlat\fP radians north of the Equator.
-If present, \fIformat\fP gives the output format.  It should be a format
-specifier that would tell \fBprintf\fP (1) to print a float value.
 .TP
-\fBgeog\fP \fBstep\fP [\fB-f\fP \fIformat\fP] \fIlon\fP \fIlat\fP \fIdir\fP \fIdist\fP
+\fBgeog\fP \fBstep\fP [\fIlon\fP \fIlat\fP \fIdir\fP \fIdist\fP]
 Computes the longitude and latitude of the point in direction \fIdir\fP and
 distance \fIdist\fP along a great circle from point (\fIlon\fP,\ \fIlat\fP).
-If present, \fIformat\fP gives the output format.  It should be a format
-specifier that would tell \fBprintf\fP (1) to print two float values.
+
+If \fIlon\fP \fIlat\fP \fIdir\fP \fIdist\fP are not given on the command line,
+values are read from standard input.  There will be one line of output for
+every four values read in.
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
 .SH AUTHOR
