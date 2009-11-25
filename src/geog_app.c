@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.24 $ $Date: 2009/11/20 23:01:11 $
+   .	$Revision: 1.25 $ $Date: 2009/11/25 17:41:23 $
  */
 
 #include <stdlib.h>
@@ -92,40 +92,30 @@ int lonr_cb(int argc, char *argv[])
 {
     char *l_s, *r_s;		/* Strings from command line */
     double l, r;		/* Values from command line */
-    char *fmt;			/* Format for printing result */
+    double c;
 
-    if (argc < 4) {
+    if (argc != 4) {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append("[-f format] lon reflon\n");
+	Err_Append("lon reflon\n");
 	return 0;
     }
-    fmt = "%lf\n";
-    if (strcmp(argv[2], "-f") == 0) {
-	fmt = Str_Esc(argv[3]);
-	l_s = argv[4];
-	r_s = argv[5];
-    } else {
-	l_s = argv[2];
-	r_s = argv[3];
-    }
+    l_s = argv[2];
     if (sscanf(l_s, "%lf", &l) != 1) {
 	Err_Append("Expected float value for longitude, got ");
 	Err_Append(l_s);
 	return 0;
     }
+    r_s = argv[3];
     if (sscanf(r_s, "%lf", &r) != 1) {
 	Err_Append("Expected float value for reference longitude, got ");
 	Err_Append(r_s);
 	return 0;
     }
-    if (use_deg) {
-	l *= RAD_DEG;
-	r *= RAD_DEG;
-    }
-    printf(fmt, (use_deg ? DEG_RAD : 1.0) * LonToRef(l, r));
+    c = (use_deg ? RAD_DEG : 1.0);
+    printf("%lf\n", LonToRef(l * c, r * c) / c);
     return 1;
 }
 
@@ -133,66 +123,44 @@ int latn_cb(int argc, char *argv[])
 {
     char *l_s;			/* String from command line */
     double l;			/* Latitude value from command line */
-    char *fmt;
+    double c;
 
-    if (argc < 3) {
+    if (argc != 3) {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append("[-f format] lat\n");
+	Err_Append(" lat\n");
 	return 0;
     }
-    fmt = "%lf\n";
-    if (strcmp(argv[2], "-f") == 0) {
-	fmt = Str_Esc(argv[3]);
-	l_s = argv[4];
-    } else {
-	l_s = argv[2];
-    }
-
-    /* Get latitude value from command line argument */
+    l_s = argv[2];
     if (sscanf(l_s, "%lf", &l) != 1) {
 	Err_Append("Expected float value for latitude, got ");
 	Err_Append(l_s);
 	return 0;
     }
-    if (use_deg) {
-	l *= RAD_DEG;
-    }
-
-    /* Send result */
-    printf(fmt, (use_deg ? DEG_RAD : 1.0) * LatN(l));
+    c = (use_deg ? RAD_DEG : 1.0);
+    printf("%f\n", LatN(l * c) / c);
     return 1;
 }
 
 int gcdist_cb(int argc, char *argv[])
 {
     char *lat1_s, *lon1_s, *lat2_s, *lon2_s;
-    double lat1, lon1, lat2, lon2;
-    char *fmt;
+    double lat1, lon1, lat2, lon2, c;
 
-    if (argc < 6) {
+    if (argc != 6) {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append("[-f format] lat1 lon1 lat2 lon2\n");
+	Err_Append("lat1 lon1 lat2 lon2\n");
 	return 0;
     }
-    fmt = "%lf\n";
-    if (strcmp(argv[2], "-f") == 0) {
-	fmt = Str_Esc(argv[3]);
-	lat1_s = argv[4];
-	lon1_s = argv[5];
-	lat2_s = argv[6];
-	lon2_s = argv[7];
-    } else {
-	lat1_s = argv[2];
-	lon1_s = argv[3];
-	lat2_s = argv[4];
-	lon2_s = argv[5];
-    }
+    lat1_s = argv[2];
+    lon1_s = argv[3];
+    lat2_s = argv[4];
+    lon2_s = argv[5];
 
     /* Get coordinates from command line arguments */
     if (sscanf(lat1_s, "%lf", &lat1) != 1) {
@@ -215,15 +183,8 @@ int gcdist_cb(int argc, char *argv[])
 	Err_Append(lon2_s);
 	return 0;
     }
-    if (use_deg) {
-	lat1 *= RAD_DEG;
-	lon1 *= RAD_DEG;
-	lat2 *= RAD_DEG;
-	lon2 *= RAD_DEG;
-    }
-
-    /* Send result */
-    printf(fmt, (use_deg ? DEG_RAD : 1.0) * GCDistR(lat1, lon1, lat2, lon2));
+    c = (use_deg ? RAD_DEG : 1.0);
+    printf("%f\n", GCDistR(lat1 * c, lon1 * c, lat2 * c, lon2 * c) / c);
     return 1;
 }
 
@@ -236,7 +197,7 @@ int step_cb(int argc, char *argv[])
 	    c = use_deg ? RAD_DEG : 1.0;
 	    GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
 	    c = use_deg ? DEG_RAD : 1.0;
-	    printf("%lf %lf\n", lon2 * c, lat2 * c);
+	    printf("%f %f\n", lon2 * c, lat2 * c);
 	}
     } else if (argc == 6) {
 	char *lat1_s, *lon1_s, *dirn_s, *dist_s;
@@ -272,7 +233,7 @@ int step_cb(int argc, char *argv[])
 	c = use_deg ? RAD_DEG : 1.0;
 	GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
 	c = use_deg ? DEG_RAD : 1.0;
-	printf("%lf %lf\n", lon2 * c, lat2 * c);
+	printf("%f %f\n", lon2 * c, lat2 * c);
     } else {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
