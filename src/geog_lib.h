@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.16 $ $Date: 2009/11/10 20:01:55 $
+   .	$Revision: 1.17 $ $Date: 2009/11/10 23:06:18 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -20,6 +20,12 @@
 #endif
 #ifndef M_PI_2
 #define M_PI_2   1.570796326794896619231	/* pi / 2 */
+#endif
+#ifndef RAD_DEG
+#define RAD_DEG   0.01745329251994329576	/* radians / degree */
+#endif
+#ifndef DEG_RAD
+#define DEG_RAD   57.29577951308232087680	/* degrees / radian */
 #endif
 
 double LonToRef(const double, const double);
