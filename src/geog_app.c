@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.23 $ $Date: 2009/11/10 23:06:18 $
+   .	$Revision: 1.24 $ $Date: 2009/11/20 23:01:11 $
  */
 
 #include <stdlib.h>
@@ -122,10 +122,10 @@ int lonr_cb(int argc, char *argv[])
 	return 0;
     }
     if (use_deg) {
-	l *= M_PI / 180.0;
-	r *= M_PI / 180.0;
+	l *= RAD_DEG;
+	r *= RAD_DEG;
     }
-    printf(fmt, (use_deg ? 180 / M_PI : 1.0) * LonToRef(l, r));
+    printf(fmt, (use_deg ? DEG_RAD : 1.0) * LonToRef(l, r));
     return 1;
 }
 
@@ -158,11 +158,11 @@ int latn_cb(int argc, char *argv[])
 	return 0;
     }
     if (use_deg) {
-	l *= M_PI / 180.0;
+	l *= RAD_DEG;
     }
 
     /* Send result */
-    printf(fmt, (use_deg ? 180 / M_PI : 1.0) * LatN(l));
+    printf(fmt, (use_deg ? DEG_RAD : 1.0) * LatN(l));
     return 1;
 }
 
@@ -216,77 +216,70 @@ int gcdist_cb(int argc, char *argv[])
 	return 0;
     }
     if (use_deg) {
-	lat1 *= M_PI / 180.0;
-	lon1 *= M_PI / 180.0;
-	lat2 *= M_PI / 180.0;
-	lon2 *= M_PI / 180.0;
+	lat1 *= RAD_DEG;
+	lon1 *= RAD_DEG;
+	lat2 *= RAD_DEG;
+	lon2 *= RAD_DEG;
     }
 
     /* Send result */
-    printf(fmt, (use_deg ? 180 / M_PI : 1.0) * GCDistR(lat1, lon1, lat2, lon2));
+    printf(fmt, (use_deg ? DEG_RAD : 1.0) * GCDistR(lat1, lon1, lat2, lon2));
     return 1;
 }
 
 int step_cb(int argc, char *argv[])
 {
-    char *lat1_s, *lon1_s, *dirn_s, *dist_s;
-    double lat1, lon1, dirn, dist, lat2, lon2;
-    char *fmt;
+    double lat1, lon1, dirn, dist, lat2, lon2, c;
 
-    if (argc < 6) {
+    if (argc == 2) {
+	while (scanf("%lf %lf %lf %lf", &lat1, &lon1, &dirn, &dist) == 4) {
+	    c = use_deg ? RAD_DEG : 1.0;
+	    GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
+	    c = use_deg ? DEG_RAD : 1.0;
+	    printf("%lf %lf\n", lon2 * c, lat2 * c);
+	}
+    } else if (argc == 6) {
+	char *lat1_s, *lon1_s, *dirn_s, *dist_s;
+
+	lon1_s = argv[2];
+	if (sscanf(lon1_s, "%lf", &lon1) != 1) {
+	    Err_Append("Expected float value for lon1, got ");
+	    Err_Append(lon1_s);
+	    Err_Append(".\n");
+	    return 0;
+	}
+	lat1_s = argv[3];
+	if (sscanf(lat1_s, "%lf", &lat1) != 1) {
+	    Err_Append("Expected float value for lat1, got ");
+	    Err_Append(lat1_s);
+	    Err_Append(".\n");
+	    return 0;
+	}
+	dirn_s = argv[4];
+	if (sscanf(dirn_s, "%lf", &dirn) != 1) {
+	    Err_Append("Expected float value for azimuth, got ");
+	    Err_Append(dirn_s);
+	    Err_Append(".\n");
+	    return 0;
+	}
+	dist_s = argv[5];
+	if (sscanf(dist_s, "%lf", &dist) != 1) {
+	    Err_Append("Expected float value for range, got ");
+	    Err_Append(dist_s);
+	    Err_Append(".\n");
+	    return 0;
+	}
+	c = use_deg ? RAD_DEG : 1.0;
+	GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
+	c = use_deg ? DEG_RAD : 1.0;
+	printf("%lf %lf\n", lon2 * c, lat2 * c);
+    } else {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append("[-f format] lon lat direction distance\n");
+	Err_Append(" [lon lat direction distance]\n");
 	return 0;
     }
-    fmt = "%lf %lf\n";
-    if (strcmp(argv[2], "-f") == 0) {
-	fmt = Str_Esc(argv[3]);
-	lon1_s = argv[4];
-	lat1_s = argv[5];
-	dirn_s = argv[6];
-	dist_s = argv[7];
-    } else {
-	lon1_s = argv[2];
-	lat1_s = argv[3];
-	dirn_s = argv[4];
-	dist_s = argv[5];
-    }
-
-    /* Get values from command line arguments */
-    if (sscanf(lon1_s, "%lf", &lon1) != 1) {
-	Err_Append("Expected float value for lon1, got ");
-	Err_Append(lon1_s);
-	return 0;
-    }
-    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
-	Err_Append("Expected float value for lat1, got ");
-	Err_Append(lat1_s);
-	return 0;
-    }
-    if (sscanf(dirn_s, "%lf", &dirn) != 1) {
-	Err_Append("Expected float value for azimuth, got ");
-	Err_Append(dirn_s);
-	return 0;
-    }
-    if (sscanf(dist_s, "%lf", &dist) != 1) {
-	Err_Append("Expected float value for range, got ");
-	Err_Append(dist_s);
-	return 0;
-    }
-    if (use_deg) {
-	lat1 *= M_PI / 180.0;
-	lon1 *= M_PI / 180.0;
-	dirn *= M_PI / 180.0;
-	dist *= M_PI / 180.0;
-    }
-
-    /* Send result */
-    GeogStep(lon1, lat1, dirn, dist, &lon2, &lat2);
-    lon2 *= (use_deg ? 180 / M_PI : 1.0);
-    lat2 *= (use_deg ? 180 / M_PI : 1.0);
-    printf(fmt, lon2, lat2);
     return 1;
 }
