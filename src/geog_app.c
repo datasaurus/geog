@@ -7,14 +7,13 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.25 $ $Date: 2009/11/25 17:41:23 $
+   .	$Revision: 1.26 $ $Date: 2009/11/25 19:06:23 $
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "err_msg.h"
-#include "mstring.h"
 #include "geog_lib.h"
 
 /* Application name and subcommand name */
