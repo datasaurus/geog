@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.24 $ $Date: 2009/11/24 18:20:45 $
+   .	$Revision: 1.25 $ $Date: 2009/11/25 20:47:35 $
  */
 
 #include <math.h>
@@ -33,11 +33,9 @@ double LatN(const double l)
 }
 
 /* Great circle distance in radians between two points */
-double GCDistR(const double lat1, const double lon1,
-	const double lat2, const double lon2)
+double GCDistR(const double a1, const double o1, const double a2, const double o2)
 {
-    double sin_dlon_2, sin_dlat_2;
-    double a;
+    double sin_do_2, sin_da_2, a;
 
     /*
        Reference -- R.W. Sinnott, "Virtues of the Haversine",
@@ -45,18 +43,19 @@ double GCDistR(const double lat1, const double lon1,
        cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1
      */
 
-    sin_dlon_2 = sin(0.5 * (lon2 - lon1));
-    sin_dlat_2 = sin(0.5 * (lat2 - lat1));
-    a = sqrt(sin_dlat_2 * sin_dlat_2
-	+ cos(lat1) * cos(lat2) * sin_dlon_2 * sin_dlon_2);
+    sin_do_2 = sin(0.5 * (o2 - o1));
+    sin_da_2 = sin(0.5 * (a2 - a1));
+    a = sqrt(sin_da_2 * sin_da_2 + cos(a1) * cos(a2) * sin_do_2 * sin_do_2);
     return (a > 1.0 ? M_PI : 2.0 * asin(a));
 }
 
-/* Compute lat-lon at given distance and direction from a point.  */
-void GeogStep(double lon1, double lat1, double dirn, double dist,
-	double *lon2, double *lat2)
+/*
+   Compute destination point longitude *o2, latitude *a2 at given separation s
+   and direction d from point at longitude = o1, latitude a1.
+ */
+void GeogStep(double o1, double a1, double d, double s, double *o2, double *a2)
 {
-    double sin_dist, sin_dirn, cos_dirn, dlon, a;
+    double sin_s, sin_d, cos_d, dlon, a, x, y;
 
     /*
        Reference -- Smart, W. M., "Textbook on Spherical Astronomy",
@@ -64,13 +63,13 @@ void GeogStep(double lon1, double lat1, double dirn, double dist,
        Cambridge University Press, Cambridge, 1977.
      */
 
-    sin_dist = sin(dist);
-    sin_dirn = sin(dirn);
-    cos_dirn = cos(dirn);
-    a = 0.5 * (sin(lat1 + dist) * (1.0 + cos_dirn)
-	    + sin(lat1 - dist) * (1.0 - cos_dirn));
-    *lat2 = (a > 1.0) ? M_PI_2 : (a < -1.0) ? -M_PI_2 : asin(a);
-    dlon = atan2(sin_dist * sin_dirn, 0.5 * (cos(lat1 + dist) * (1 + cos_dirn)
-		+ cos(lat1 - dist) * (1 - cos_dirn)));
-    *lon2 = LonToRef(lon1 + dlon, 0.0);
+    sin_s = sin(s);
+    sin_d = sin(d);
+    cos_d = cos(d);
+    a = 0.5 * (sin(a1 + s) * (1.0 + cos_d) + sin(a1 - s) * (1.0 - cos_d));
+    *a2 = (a > 1.0) ? M_PI_2 : (a < -1.0) ? -M_PI_2 : asin(a);
+    y = sin_s * sin_d;
+    x = 0.5 * (cos(a1 + s) * (1 + cos_d) + cos(a1 - s) * (1 - cos_d));
+    dlon = atan2(y, x);
+    *o2 = LonToRef(o1 + dlon, 0.0);
 }
