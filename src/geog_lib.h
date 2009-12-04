@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.17 $ $Date: 2009/11/10 23:06:18 $
+   .	$Revision: 1.18 $ $Date: 2009/11/25 17:12:11 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -31,6 +31,7 @@
 double LonToRef(const double, const double);
 double LatN(const double);
 double GCDistR(const double, const double, const double, const double);
+double Azimuth(const double, const double, const double, const double);
 void GeogStep(double, double, double, double, double *, double *);
 
 #endif

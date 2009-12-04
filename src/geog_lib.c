@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.25 $ $Date: 2009/11/25 20:47:35 $
+   .	$Revision: 1.26 $ $Date: 2009/12/03 22:28:38 $
  */
 
 #include <math.h>
@@ -48,7 +48,18 @@ double GCDistR(const double a1, const double o1, const double a2, const double o
     a = sqrt(sin_da_2 * sin_da_2 + cos(a1) * cos(a2) * sin_do_2 * sin_do_2);
     return (a > 1.0 ? M_PI : 2.0 * asin(a));
 }
+
+/* Azimuth from (longitude, latitude): (o1, a1) to (o2, a2) */
+double Azimuth(const double a1, const double o1, const double a2, const double o2)
+{
+    double sin_da, sin_sa, y, x;
 
+    sin_da = sin(a1 - a2);
+    sin_sa = sin(a2 + a1);
+    y = cos(a2) * sin(o2 - o1);
+    x = 0.5 * (sin_sa - sin_da - (sin_sa + sin_da) * cos(o2 - o1));
+    return atan2(y, x);
+}
 /*
    Compute destination point longitude *o2, latitude *a2 at given separation s
    and direction d from point at longitude = o1, latitude a1.
