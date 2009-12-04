@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.26 $ $Date: 2009/11/25 19:06:23 $
+   .	$Revision: 1.27 $ $Date: 2009/11/28 23:43:35 $
  */
 
 #include <stdlib.h>
@@ -20,13 +20,14 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 4
+#define NCMD 5
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
 callback lonr_cb;
 callback latn_cb;
 callback gcdist_cb;
+callback az_cb;
 callback step_cb;
 
 /* If true, use degrees instead of radians */
@@ -39,8 +40,8 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"lonr", "latn", "gcdist", "step"};
-    callback *cb1v[NCMD] = {lonr_cb, latn_cb, gcdist_cb, step_cb};
+    char *cmd1v[NCMD] = {"lonr", "latn", "gcdist", "az", "step"};
+    callback *cb1v[NCMD] = {lonr_cb, latn_cb, gcdist_cb, az_cb, step_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -184,6 +185,50 @@ int gcdist_cb(int argc, char *argv[])
     }
     c = (use_deg ? RAD_DEG : 1.0);
     printf("%f\n", GCDistR(lat1 * c, lon1 * c, lat2 * c, lon2 * c) / c);
+    return 1;
+}
+
+int az_cb(int argc, char *argv[])
+{
+    char *lat1_s, *lon1_s, *lat2_s, *lon2_s;
+    double lat1, lon1, lat2, lon2, c;
+
+    if (argc != 6) {
+	Err_Append("Usage: ");
+	Err_Append(cmd);
+	Err_Append(" ");
+	Err_Append(cmd1);
+	Err_Append("lat1 lon1 lat2 lon2\n");
+	return 0;
+    }
+    lat1_s = argv[2];
+    lon1_s = argv[3];
+    lat2_s = argv[4];
+    lon2_s = argv[5];
+
+    /* Get coordinates from command line arguments */
+    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
+	Err_Append("Expected float value for lat1, got ");
+	Err_Append(lat1_s);
+	return 0;
+    }
+    if (sscanf(lon1_s, "%lf", &lon1) != 1) {
+	Err_Append("Expected float value for lon1, got ");
+	Err_Append(lon1_s);
+	return 0;
+    }
+    if (sscanf(lat2_s, "%lf", &lat2) != 1) {
+	Err_Append("Expected float value for lat2, got ");
+	Err_Append(lat2_s);
+	return 0;
+    }
+    if (sscanf(lon2_s, "%lf", &lon2) != 1) {
+	Err_Append("Expected float value for lon2, got ");
+	Err_Append(lon2_s);
+	return 0;
+    }
+    c = (use_deg ? RAD_DEG : 1.0);
+    printf("%f\n", Azimuth(lat1 * c, lon1 * c, lat2 * c, lon2 * c) / c);
     return 1;
 }
 
