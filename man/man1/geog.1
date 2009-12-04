@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.8 $ $Date: 2009/11/10 23:06:18 $
+.\" $Revision: 1.9 $ $Date: 2009/11/25 20:52:56 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
@@ -30,6 +30,13 @@ centered about \fIreflon\fP.  It prints a value that equals
 \fBgeog\fP \fBlatn\fP \fIlat\fP
 Computes the principle latitude corresponding to \fIlat\fP.  It prints
 the latitude reached by going \fIlat\fP radians north of the Equator.
+.TP
+\fBgeog\fP \fBgcdist\fP \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP
+Computes the great circle distance from (\fIlon1\fP,\ \fIlat1\fP) to
+(\fIlon2\fP,\ \fIlat2\fP).
+.TP
+\fBgeog\fP \fBaz\fP \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP
+Computes the azimuth from (\fIlon1\fP,\ \fIlat1\fP) to (\fIlon2\fP,\ \fIlat2\fP).
 .TP
 \fBgeog\fP \fBstep\fP [\fIlon\fP \fIlat\fP \fIdir\fP \fIdist\fP]
 Computes the longitude and latitude of the point in direction \fIdir\fP and
