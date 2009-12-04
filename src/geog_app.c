@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.27 $ $Date: 2009/11/28 23:43:35 $
+   .	$Revision: 1.28 $ $Date: 2009/12/04 18:01:02 $
  */
 
 #include <stdlib.h>
@@ -146,8 +146,8 @@ int latn_cb(int argc, char *argv[])
 
 int gcdist_cb(int argc, char *argv[])
 {
-    char *lat1_s, *lon1_s, *lat2_s, *lon2_s;
-    double lat1, lon1, lat2, lon2, c;
+    char *lon1_s, *lat1_s, *lon2_s,  *lat2_s;
+    double lon1, lat1, lon2, lat2, c;
 
     if (argc != 6) {
 	Err_Append("Usage: ");
@@ -157,30 +157,30 @@ int gcdist_cb(int argc, char *argv[])
 	Err_Append("lat1 lon1 lat2 lon2\n");
 	return 0;
     }
-    lat1_s = argv[2];
-    lon1_s = argv[3];
-    lat2_s = argv[4];
-    lon2_s = argv[5];
+    lon1_s = argv[2];
+    lat1_s = argv[3];
+    lon2_s = argv[4];
+    lat2_s = argv[5];
 
     /* Get coordinates from command line arguments */
-    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
-	Err_Append("Expected float value for lat1, got ");
-	Err_Append(lat1_s);
-	return 0;
-    }
     if (sscanf(lon1_s, "%lf", &lon1) != 1) {
 	Err_Append("Expected float value for lon1, got ");
 	Err_Append(lon1_s);
 	return 0;
     }
-    if (sscanf(lat2_s, "%lf", &lat2) != 1) {
-	Err_Append("Expected float value for lat2, got ");
-	Err_Append(lat2_s);
+    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
+	Err_Append("Expected float value for lat1, got ");
+	Err_Append(lat1_s);
 	return 0;
     }
     if (sscanf(lon2_s, "%lf", &lon2) != 1) {
 	Err_Append("Expected float value for lon2, got ");
 	Err_Append(lon2_s);
+	return 0;
+    }
+    if (sscanf(lat2_s, "%lf", &lat2) != 1) {
+	Err_Append("Expected float value for lat2, got ");
+	Err_Append(lat2_s);
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
@@ -190,8 +190,8 @@ int gcdist_cb(int argc, char *argv[])
 
 int az_cb(int argc, char *argv[])
 {
-    char *lat1_s, *lon1_s, *lat2_s, *lon2_s;
-    double lat1, lon1, lat2, lon2, c;
+    char *lon1_s, *lat1_s, *lon2_s,  *lat2_s;
+    double lon1, lat1, lon2, lat2, c;
 
     if (argc != 6) {
 	Err_Append("Usage: ");
@@ -201,30 +201,30 @@ int az_cb(int argc, char *argv[])
 	Err_Append("lat1 lon1 lat2 lon2\n");
 	return 0;
     }
-    lat1_s = argv[2];
-    lon1_s = argv[3];
-    lat2_s = argv[4];
-    lon2_s = argv[5];
+    lon1_s = argv[2];
+    lat1_s = argv[3];
+    lon2_s = argv[4];
+    lat2_s = argv[5];
 
     /* Get coordinates from command line arguments */
-    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
-	Err_Append("Expected float value for lat1, got ");
-	Err_Append(lat1_s);
-	return 0;
-    }
     if (sscanf(lon1_s, "%lf", &lon1) != 1) {
 	Err_Append("Expected float value for lon1, got ");
 	Err_Append(lon1_s);
 	return 0;
     }
-    if (sscanf(lat2_s, "%lf", &lat2) != 1) {
-	Err_Append("Expected float value for lat2, got ");
-	Err_Append(lat2_s);
+    if (sscanf(lat1_s, "%lf", &lat1) != 1) {
+	Err_Append("Expected float value for lat1, got ");
+	Err_Append(lat1_s);
 	return 0;
     }
     if (sscanf(lon2_s, "%lf", &lon2) != 1) {
 	Err_Append("Expected float value for lon2, got ");
 	Err_Append(lon2_s);
+	return 0;
+    }
+    if (sscanf(lat2_s, "%lf", &lat2) != 1) {
+	Err_Append("Expected float value for lat2, got ");
+	Err_Append(lat2_s);
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
@@ -234,10 +234,10 @@ int az_cb(int argc, char *argv[])
 
 int step_cb(int argc, char *argv[])
 {
-    double lat1, lon1, dirn, dist, lat2, lon2, c;
+    double lon1, lat1, dirn, dist, lon2, lat2, c;
 
     if (argc == 2) {
-	while (scanf("%lf %lf %lf %lf", &lat1, &lon1, &dirn, &dist) == 4) {
+	while (scanf("%lf %lf %lf %lf", &lon1, &lat1, &dirn, &dist) == 4) {
 	    c = use_deg ? RAD_DEG : 1.0;
 	    GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
 	    c = use_deg ? DEG_RAD : 1.0;
