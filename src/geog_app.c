@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.31 $ $Date: 2009/12/08 20:12:32 $
+   .	$Revision: 1.32 $ $Date: 2009/12/08 20:55:46 $
  */
 
 #include <stdlib.h>
@@ -27,7 +27,7 @@ typedef int (callback)(int , char **);
 callback rearth_cb;
 callback lonr_cb;
 callback latn_cb;
-callback gcdist_cb;
+callback dist_cb;
 callback az_cb;
 callback step_cb;
 
@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "gcdist", "az", "step"};
-    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, gcdist_cb, az_cb, step_cb};
+    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "az", "step"};
+    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, az_cb, step_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -171,7 +171,7 @@ int latn_cb(int argc, char *argv[])
     return 1;
 }
 
-int gcdist_cb(int argc, char *argv[])
+int dist_cb(int argc, char *argv[])
 {
     char *lon1_s, *lat1_s, *lon2_s,  *lat2_s;
     double lon1, lat1, lon2, lat2, c;
