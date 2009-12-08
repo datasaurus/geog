@@ -9,14 +9,14 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.26 $ $Date: 2009/12/03 22:28:38 $
+   .	$Revision: 1.27 $ $Date: 2009/12/04 18:00:48 $
  */
 
 #include <math.h>
 #include "geog_lib.h"
 
 /* Put l into [r - M_PI, r + M_PI) */
-double LonToRef(const double l, const double r)
+double GeogLonR(const double l, const double r)
 {
     double l1 = fmod(l, 2.0 * M_PI);
     l1 = (l1 < r - M_PI) ? l1 + 2.0 * M_PI
@@ -25,7 +25,7 @@ double LonToRef(const double l, const double r)
 }
 
 /* Go l radians north of equator */
-double LatN(const double l)
+double GeogLatN(const double l)
 {
     double l1 = fmod(l, 2.0 * M_PI);
     l1 += (l1 < 0.0) ? 2.0 * M_PI : 0.0;
@@ -33,7 +33,7 @@ double LatN(const double l)
 }
 
 /* Great circle distance in radians between two points */
-double GCDistR(const double a1, const double o1, const double a2, const double o2)
+double GeogDist(const double a1, const double o1, const double a2, const double o2)
 {
     double sin_do_2, sin_da_2, a;
 
@@ -49,8 +49,8 @@ double GCDistR(const double a1, const double o1, const double a2, const double o
     return (a > 1.0 ? M_PI : 2.0 * asin(a));
 }
 
-/* Azimuth from (longitude, latitude): (o1, a1) to (o2, a2) */
-double Azimuth(const double a1, const double o1, const double a2, const double o2)
+/* GeogAz from (longitude, latitude): (o1, a1) to (o2, a2) */
+double GeogAz(const double a1, const double o1, const double a2, const double o2)
 {
     double sin_da, sin_sa, y, x;
 
@@ -82,5 +82,5 @@ void GeogStep(double o1, double a1, double d, double s, double *o2, double *a2)
     y = sin_s * sin_d;
     x = 0.5 * (cos(a1 + s) * (1 + cos_d) + cos(a1 - s) * (1 - cos_d));
     dlon = atan2(y, x);
-    *o2 = LonToRef(o1 + dlon, 0.0);
+    *o2 = GeogLonR(o1 + dlon, 0.0);
 }

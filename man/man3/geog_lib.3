@@ -4,17 +4,17 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.10 $ $Date: 2009/11/10 20:01:55 $
+.\" $Revision: 1.11 $ $Date: 2009/11/10 23:06:18 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
-LonToRef, LatN, GCDist \- geography functions
+GeogLonR, GeogLatN, GCDist \- geography functions
 .SH SYNOPSIS
 .nf
 \fB#include "geog_lib.h"\fP
-\fBdouble LonToRef(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
-\fBdouble LatN(const double\fP \fIl\fP\fB);\fP
-\fBdouble GCDistR(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
+\fBdouble GeogLonR(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
+\fBdouble GeogLatN(const double\fP \fIl\fP\fB);\fP
+\fBdouble GeogDist(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
 	\fBconst double\fP \fIlat2\fP, \fBconst double\fP \fIlon2\fP);
 \fBvoid GeogStep(double\fP \fIlon0\fP, \fBdouble\fP \fIlat0\fP, \fBdouble\fP \fIdirn\fP, \fBdouble\fP \fIdist\fP,
 	\fBdouble\fP *lon1\fP, \fBdouble\fP *\fIlat1\fP)
@@ -22,14 +22,14 @@ LonToRef, LatN, GCDist \- geography functions
 .SH DESCRIPTION
 Unless otherwise stated, longitudes and latitudes are expressed in radians.
 
-\fBLonToRef\fP returns a longitude equivalent to \fIl\fP in a longitude domain
+\fBGeogLonR\fP returns a longitude equivalent to \fIl\fP in a longitude domain
 centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ 360.0 for some
 integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
 
-\fBLatN\fP returns the principle latitude corresponding to \fIl\fP.  Return
+\fBGeogLatN\fP returns the principle latitude corresponding to \fIl\fP.  Return
 value is the latitude reached by going \fIl\fP radians north of the Equator.
 
-\fBGCDistR\fP returns the great circle distance in radians between points
+\fBGeogDist\fP returns the great circle distance in radians between points
 (\fIlat1\fP,\ \fIlon1\fP) and (\fIlat2\fP,\ \fIlon2\fP) where
 \fIlat1\fP,\ \fIlon1\fP \fIlat2\fP,\ and \fIlon2\fP must be given in radians.
 

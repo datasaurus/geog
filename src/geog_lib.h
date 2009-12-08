@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.18 $ $Date: 2009/11/25 17:12:11 $
+   .	$Revision: 1.19 $ $Date: 2009/12/04 18:00:48 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -28,10 +28,10 @@
 #define DEG_RAD   57.29577951308232087680	/* degrees / radian */
 #endif
 
-double LonToRef(const double, const double);
-double LatN(const double);
-double GCDistR(const double, const double, const double, const double);
-double Azimuth(const double, const double, const double, const double);
+double GeogLonR(const double, const double);
+double GeogLatN(const double);
+double GeogDist(const double, const double, const double, const double);
+double GeogAz(const double, const double, const double, const double);
 void GeogStep(double, double, double, double, double *, double *);
 
 #endif

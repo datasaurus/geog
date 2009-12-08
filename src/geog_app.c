@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.28 $ $Date: 2009/12/04 18:01:02 $
+   .	$Revision: 1.29 $ $Date: 2009/12/04 18:11:16 $
  */
 
 #include <stdlib.h>
@@ -115,7 +115,7 @@ int lonr_cb(int argc, char *argv[])
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
-    printf("%lf\n", LonToRef(l * c, r * c) / c);
+    printf("%lf\n", GeogLonR(l * c, r * c) / c);
     return 1;
 }
 
@@ -140,7 +140,7 @@ int latn_cb(int argc, char *argv[])
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
-    printf("%f\n", LatN(l * c) / c);
+    printf("%f\n", GeogLatN(l * c) / c);
     return 1;
 }
 
@@ -184,7 +184,7 @@ int gcdist_cb(int argc, char *argv[])
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
-    printf("%f\n", GCDistR(lat1 * c, lon1 * c, lat2 * c, lon2 * c) / c);
+    printf("%f\n", GeogDist(lat1 * c, lon1 * c, lat2 * c, lon2 * c) / c);
     return 1;
 }
 
@@ -228,7 +228,7 @@ int az_cb(int argc, char *argv[])
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
-    printf("%f\n", Azimuth(lat1 * c, lon1 * c, lat2 * c, lon2 * c) / c);
+    printf("%f\n", GeogAz(lat1 * c, lon1 * c, lat2 * c, lon2 * c) / c);
     return 1;
 }
 
