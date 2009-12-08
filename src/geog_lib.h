@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.20 $ $Date: 2009/12/08 19:54:52 $
+   .	$Revision: 1.21 $ $Date: 2009/12/08 20:21:12 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -28,6 +28,7 @@
 #define DEG_RAD   57.29577951308232087680	/* degrees / radian */
 #endif
 
+double GeogREarth(const double *);
 double GeogLonR(const double, const double);
 double GeogLatN(const double);
 double GeogDist(const double, const double, const double, const double);

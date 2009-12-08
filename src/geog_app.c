@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.30 $ $Date: 2009/12/08 19:54:52 $
+   .	$Revision: 1.31 $ $Date: 2009/12/08 20:12:32 $
  */
 
 #include <stdlib.h>
@@ -20,10 +20,11 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 5
+#define NCMD 6
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
+callback rearth_cb;
 callback lonr_cb;
 callback latn_cb;
 callback gcdist_cb;
@@ -40,8 +41,8 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"lonr", "latn", "gcdist", "az", "step"};
-    callback *cb1v[NCMD] = {lonr_cb, latn_cb, gcdist_cb, az_cb, step_cb};
+    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "gcdist", "az", "step"};
+    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, gcdist_cb, az_cb, step_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -86,6 +87,32 @@ int main(int argc, char *argv[])
 	rslt = 0;
     }
     return !rslt;
+}
+
+int rearth_cb(int argc, char *argv[])
+{
+    if (argc == 2) {
+	printf("%f\n", GeogREarth(NULL));
+    } else if (argc == 3) {
+	char *r_s = argv[2];
+	double r;
+
+	if (sscanf(r_s, "%lf", &r) != 1) {
+	    Err_Append("Expected float value for Earth radius, got ");
+	    Err_Append(r_s);
+	    Err_Append(".\n");
+	    return 0;
+	}
+	printf("%f\n", GeogREarth(&r));
+    } else {
+	Err_Append("Usage: ");
+	Err_Append(cmd);
+	Err_Append(" ");
+	Err_Append(cmd1);
+	Err_Append(" [r]\n");
+	return 0;
+    }
+    return 1;
 }
 
 int lonr_cb(int argc, char *argv[])

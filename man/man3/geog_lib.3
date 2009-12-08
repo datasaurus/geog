@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.14 $ $Date: 2009/12/08 20:12:32 $
+.\" $Revision: 1.15 $ $Date: 2009/12/08 20:21:12 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
@@ -12,6 +12,7 @@ GeogLonR, GeogLatN, GCDist \- geography functions
 .SH SYNOPSIS
 .nf
 \fB#include "geog_lib.h"\fP
+\fBdouble GeogREarth(const double\fP *\fIr)\fP\fB;\fP
 \fBdouble GeogLonR(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
 \fBdouble GeogLatN(const double\fP \fIl\fP\fB);\fP
 \fBdouble GeogDist(const double\fP \fIlon1\fP, \fBconst double\fP \fIlat1\fP,
@@ -24,6 +25,9 @@ GeogLonR, GeogLatN, GCDist \- geography functions
 .SH DESCRIPTION
 Unless otherwise stated, longitudes, latitudes, and other angles are expressed
 in radians.
+
+\fBGeogREarth\fP sets radius of the Earth to *\fIr\fP if \fIr\fP is not
+\fBNULL\fP, and then returns the radius of the Earth.
 
 \fBGeogLonR\fP returns a longitude equivalent to \fIl\fP in a longitude domain
 centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ 360.0 for some

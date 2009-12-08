@@ -9,11 +9,21 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.29 $ $Date: 2009/12/08 20:12:32 $
+   .	$Revision: 1.30 $ $Date: 2009/12/08 20:21:12 $
  */
 
 #include <math.h>
 #include "geog_lib.h"
+
+/* Get or set Earth radius */
+double GeogREarth(const double *r)
+{
+    static double rearth = 6366707.019;		/* 1' = 1852 m */
+    if (r) {
+	rearth = *r;
+    }
+    return rearth;
+}
 
 /* Put l into [r - M_PI, r + M_PI) */
 double GeogLonR(const double l, const double r)
