@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.28 $ $Date: 2009/12/08 19:54:52 $
+   .	$Revision: 1.29 $ $Date: 2009/12/08 20:12:32 $
  */
 
 #include <math.h>
@@ -64,7 +64,8 @@ double GeogAz(const double o1, const double a1, const double o2, const double a2
    Compute destination point longitude *o2, latitude *a2 at given separation s
    and direction d from point at longitude = o1, latitude a1.
  */
-void GeogStep(double o1, double a1, double d, double s, double *o2, double *a2)
+void GeogStep(const double o1, const double a1, const double d, const double s,
+	double *o2, double *a2)
 {
     double sin_s, sin_d, cos_d, dlon, a, x, y;
 

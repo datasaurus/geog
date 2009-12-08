@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.19 $ $Date: 2009/12/04 18:00:48 $
+   .	$Revision: 1.20 $ $Date: 2009/12/08 19:54:52 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -32,6 +32,7 @@ double GeogLonR(const double, const double);
 double GeogLatN(const double);
 double GeogDist(const double, const double, const double, const double);
 double GeogAz(const double, const double, const double, const double);
-void GeogStep(double, double, double, double, double *, double *);
+void GeogStep(const double, const double, const double, const double,
+	double *, double *);
 
 #endif

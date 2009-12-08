@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.13 $ $Date: 2009/12/08 20:05:42 $
+.\" $Revision: 1.14 $ $Date: 2009/12/08 20:12:32 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
@@ -15,11 +15,11 @@ GeogLonR, GeogLatN, GCDist \- geography functions
 \fBdouble GeogLonR(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
 \fBdouble GeogLatN(const double\fP \fIl\fP\fB);\fP
 \fBdouble GeogDist(const double\fP \fIlon1\fP, \fBconst double\fP \fIlat1\fP,
-	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP);
+	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP\fB);\fP
 \fBdouble GeogAz(const double\fP \fIlon1\fP, \fBconst double\fP \fIlat1\fP,
-	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP)
-\fBvoid GeogStep(double\fP \fIlon0\fP, \fBdouble\fP \fIlat0\fP, \fBdouble\fP \fIdirn\fP, \fBdouble\fP \fIdist\fP,
-	\fBdouble\fP *lon1\fP, \fBdouble\fP *\fIlat1\fP)
+	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP\fB);\fP
+\fBvoid GeogStep(const double\fP \fIlon0\fP, \fBconst double\fP \fIlat0\fP,
+	\fBconst double\fP \fIdirn\fP, \fBconst double\fP \fIdist\fP, \fBdouble\fP *lon1\fP, \fBdouble\fP *\fIlat1\fP\fB);\fP
 .fi
 .SH DESCRIPTION
 Unless otherwise stated, longitudes, latitudes, and other angles are expressed
