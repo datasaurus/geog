@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.32 $ $Date: 2009/12/08 20:55:46 $
+   .	$Revision: 1.33 $ $Date: 2009/12/08 21:01:39 $
  */
 
 #include <stdlib.h>
@@ -133,12 +133,14 @@ int lonr_cb(int argc, char *argv[])
     if (sscanf(l_s, "%lf", &l) != 1) {
 	Err_Append("Expected float value for longitude, got ");
 	Err_Append(l_s);
+	Err_Append(".\n");
 	return 0;
     }
     r_s = argv[3];
     if (sscanf(r_s, "%lf", &r) != 1) {
 	Err_Append("Expected float value for reference longitude, got ");
 	Err_Append(r_s);
+	Err_Append(".\n");
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
@@ -164,6 +166,7 @@ int latn_cb(int argc, char *argv[])
     if (sscanf(l_s, "%lf", &l) != 1) {
 	Err_Append("Expected float value for latitude, got ");
 	Err_Append(l_s);
+	Err_Append(".\n");
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
@@ -193,21 +196,25 @@ int dist_cb(int argc, char *argv[])
     if (sscanf(lon1_s, "%lf", &lon1) != 1) {
 	Err_Append("Expected float value for lon1, got ");
 	Err_Append(lon1_s);
+	Err_Append(".\n");
 	return 0;
     }
     if (sscanf(lat1_s, "%lf", &lat1) != 1) {
 	Err_Append("Expected float value for lat1, got ");
 	Err_Append(lat1_s);
+	Err_Append(".\n");
 	return 0;
     }
     if (sscanf(lon2_s, "%lf", &lon2) != 1) {
 	Err_Append("Expected float value for lon2, got ");
 	Err_Append(lon2_s);
+	Err_Append(".\n");
 	return 0;
     }
     if (sscanf(lat2_s, "%lf", &lat2) != 1) {
 	Err_Append("Expected float value for lat2, got ");
 	Err_Append(lat2_s);
+	Err_Append(".\n");
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
@@ -237,21 +244,25 @@ int az_cb(int argc, char *argv[])
     if (sscanf(lon1_s, "%lf", &lon1) != 1) {
 	Err_Append("Expected float value for lon1, got ");
 	Err_Append(lon1_s);
+	Err_Append(".\n");
 	return 0;
     }
     if (sscanf(lat1_s, "%lf", &lat1) != 1) {
 	Err_Append("Expected float value for lat1, got ");
 	Err_Append(lat1_s);
+	Err_Append(".\n");
 	return 0;
     }
     if (sscanf(lon2_s, "%lf", &lon2) != 1) {
 	Err_Append("Expected float value for lon2, got ");
 	Err_Append(lon2_s);
+	Err_Append(".\n");
 	return 0;
     }
     if (sscanf(lat2_s, "%lf", &lat2) != 1) {
 	Err_Append("Expected float value for lat2, got ");
 	Err_Append(lat2_s);
+	Err_Append(".\n");
 	return 0;
     }
     c = (use_deg ? RAD_DEG : 1.0);
