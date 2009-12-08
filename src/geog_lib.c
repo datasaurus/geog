@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.27 $ $Date: 2009/12/04 18:00:48 $
+   .	$Revision: 1.28 $ $Date: 2009/12/08 19:54:52 $
  */
 
 #include <math.h>
@@ -33,7 +33,7 @@ double GeogLatN(const double l)
 }
 
 /* Great circle distance in radians between two points */
-double GeogDist(const double a1, const double o1, const double a2, const double o2)
+double GeogDist(const double o1, const double a1, const double o2, const double a2)
 {
     double sin_do_2, sin_da_2, a;
 
@@ -50,7 +50,7 @@ double GeogDist(const double a1, const double o1, const double a2, const double 
 }
 
 /* GeogAz from (longitude, latitude): (o1, a1) to (o2, a2) */
-double GeogAz(const double a1, const double o1, const double a2, const double o2)
+double GeogAz(const double o1, const double a1, const double o2, const double a2)
 {
     double sin_da, sin_sa, y, x;
 

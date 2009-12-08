@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.12 $ $Date: 2009/12/08 19:54:52 $
+.\" $Revision: 1.13 $ $Date: 2009/12/08 20:05:42 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
@@ -14,10 +14,10 @@ GeogLonR, GeogLatN, GCDist \- geography functions
 \fB#include "geog_lib.h"\fP
 \fBdouble GeogLonR(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
 \fBdouble GeogLatN(const double\fP \fIl\fP\fB);\fP
-\fBdouble GeogDist(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
-	\fBconst double\fP \fIlat2\fP, \fBconst double\fP \fIlon2\fP);
-\fBdouble GeogAz(const double\fP \fIlat1\fP, \fBconst double\fP \fIlon1\fP,
-	\fBconst double\fP \fIlat2\fP, \fBconst double\fP \fIlon2\fP)
+\fBdouble GeogDist(const double\fP \fIlon1\fP, \fBconst double\fP \fIlat1\fP,
+	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP);
+\fBdouble GeogAz(const double\fP \fIlon1\fP, \fBconst double\fP \fIlat1\fP,
+	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP)
 \fBvoid GeogStep(double\fP \fIlon0\fP, \fBdouble\fP \fIlat0\fP, \fBdouble\fP \fIdirn\fP, \fBdouble\fP \fIdist\fP,
 	\fBdouble\fP *lon1\fP, \fBdouble\fP *\fIlat1\fP)
 .fi
@@ -33,10 +33,10 @@ integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
 the Equator.
 
 \fBGeogDist\fP returns the great circle distance in radians between points
-(\fIlat1\fP,\ \fIlon1\fP) and (\fIlat2\fP,\ \fIlon2\fP).
+(\fIlon1\fP,\ \fIlat1\fP) and (\fIlon2\fP,\ \fIlat2\fP).
 
 \fBGeogAz\fP returns the great circle azimuth (direction) in radians clockwise
-from North from point (\fIlat1\fP,\ \fIlon1\fP) to point (\fIlat2\fP,\ \fIlon2\fP).
+from North from point (\fIlon1\fP,\ \fIlat1\fP) to point (\fIlon2\fP,\ \fIlat2\fP).
 
 \fBGeogStep\fP computes the longitude and latitude of the point in direction
 \fIdirn\fP and distance \fIdist\fP along a great circle from point
