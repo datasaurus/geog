@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.33 $ $Date: 2009/12/08 21:01:39 $
+   .	$Revision: 1.34 $ $Date: 2009/12/08 21:03:49 $
  */
 
 #include <stdlib.h>
@@ -184,7 +184,7 @@ int dist_cb(int argc, char *argv[])
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append("lat1 lon1 lat2 lon2\n");
+	Err_Append(" lat1 lon1 lat2 lon2\n");
 	return 0;
     }
     lon1_s = argv[2];
