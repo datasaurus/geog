@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.16 $ $Date: 2009/12/08 20:55:46 $
+.\" $Revision: 1.17 $ $Date: 2009/12/08 21:01:39 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
@@ -30,8 +30,9 @@ in radians.
 \fBNULL\fP, and then returns the radius of the Earth.
 
 \fBGeogLonR\fP returns a longitude equivalent to \fIl\fP in a longitude domain
-centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ 360.0 for some
-integer i, and is in the interval [\fIr\fP\ -\ 180.0,\ \fIr\fP\ +\ 180.0).
+centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ \fBpi\fP for some
+integer i, and is in the interval
+[\fIr\fP\ -\ \fBpi / 2\fP,\ \fIr\fP\ +\ \fBpi / 2\fP).
 
 \fBGeogLatN\fP returns the latitude reached by going \fIl\fP radians north of
 the Equator.
