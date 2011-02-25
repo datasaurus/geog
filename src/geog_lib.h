@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.21 $ $Date: 2009/12/08 20:21:12 $
+   .	$Revision: 1.22 $ $Date: 2009/12/08 20:55:46 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -35,5 +35,6 @@ double GeogDist(const double, const double, const double, const double);
 double GeogAz(const double, const double, const double, const double);
 void GeogStep(const double, const double, const double, const double,
 	double *, double *);
+double GeogBeamHt(double, double, double);
 
 #endif

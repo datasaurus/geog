@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.17 $ $Date: 2009/12/08 21:01:39 $
+.\" $Revision: 1.18 $ $Date: 2010/10/18 20:24:40 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
@@ -21,6 +21,7 @@ GeogLonR, GeogLatN, GeogDist \- geography functions
 	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP\fB);\fP
 \fBvoid GeogStep(const double\fP \fIlon0\fP, \fBconst double\fP \fIlat0\fP,
 	\fBconst double\fP \fIdirn\fP, \fBconst double\fP \fIdist\fP, \fBdouble\fP *lon1\fP, \fBdouble\fP *\fIlat1\fP\fB);\fP
+\fBdouble\fP \fBGeogBeamHt\fP(\fBdouble\fP \fId\fP, \fBdouble\fP \fItilt\fP, \fBdouble\fP \fIa0\fP);
 .fi
 .SH DESCRIPTION
 Unless otherwise stated, longitudes, latitudes, and other angles are expressed
@@ -47,6 +48,11 @@ from North from point (\fIlon1\fP,\ \fIlat1\fP) to point (\fIlon2\fP,\ \fIlat2\f
 \fIdirn\fP and distance \fIdist\fP along a great circle from point
 (\fIlon0\fP,\ \fIlat0\fP).  It places the longitude and latitude of the destination
 point at addresses \fIlon1\fP and \fIlat1\fP respectively.
+
+\fBGeogBeamHt\fP returns height attained after travelling distance \fId\fP
+along a beam at angle \fItilt\fP above horizontal, assuming Earth radius \fIa0\fP.
+\fId\fP and \fIa0\fP must use the same unit, which will also be the unit of the
+return value.
 .SH SEE ALSO
 \fBgeog\fP (1)
 .SH AUTHOR

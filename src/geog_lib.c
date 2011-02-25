@@ -9,7 +9,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.30 $ $Date: 2009/12/08 20:21:12 $
+   .	$Revision: 1.31 $ $Date: 2009/12/08 20:55:46 $
  */
 
 #include <math.h>
@@ -94,4 +94,15 @@ void GeogStep(const double o1, const double a1, const double d, const double s,
     x = 0.5 * (cos(a1 + s) * (1 + cos_d) + cos(a1 - s) * (1 - cos_d));
     dlon = atan2(y, x);
     *o2 = GeogLonR(o1 + dlon, 0.0);
+}
+
+/*
+   Height above ground after traveling distance d along a line tilt radians
+   above horizontal. a0 is radius of Earth. a0 and d must have same units, which
+   will be unit of answer.
+ */
+
+double GeogBeamHt(double d, double tilt, double a0)
+{
+    return sqrt(a0 * a0 + 2 * a0 * d * sin(tilt) + d * d) - a0;
 }
