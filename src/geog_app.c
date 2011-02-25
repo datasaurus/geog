@@ -7,7 +7,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.34 $ $Date: 2009/12/08 21:03:49 $
+   .	$Revision: 1.35 $ $Date: 2010/10/08 19:37:28 $
  */
 
 #include <stdlib.h>
@@ -20,7 +20,7 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 6
+#define NCMD 7
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -30,6 +30,7 @@ callback latn_cb;
 callback dist_cb;
 callback az_cb;
 callback step_cb;
+callback beam_ht_cb;
 
 /* If true, use degrees instead of radians */
 int use_deg = 0;
@@ -41,8 +42,10 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "az", "step"};
-    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, az_cb, step_cb};
+    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "az",
+	"step", "beam_ht"};
+    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, az_cb,
+	step_cb, beam_ht_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -324,5 +327,47 @@ int step_cb(int argc, char *argv[])
 	Err_Append(" [lon lat direction distance]\n");
 	return 0;
     }
+    return 1;
+}
+
+int beam_ht_cb(int argc, char *argv[])
+{
+    char *d_s, *tilt_s, *a0_s;
+    double d, tilt, a0, c;
+
+    if (argc != 5) {
+	Err_Append("Usage: ");
+	Err_Append(cmd);
+	Err_Append(" ");
+	Err_Append(cmd1);
+	Err_Append(" distance tilt earth_radius ");
+	return 0;
+    }
+
+    d_s = argv[2];
+    tilt_s = argv[3];
+    a0_s = argv[4];
+
+    if (sscanf(d_s, "%lf", &d) != 1) {
+	Err_Append("Expected float value for distance, got ");
+	Err_Append(d_s);
+	Err_Append(".\n");
+	return 0;
+    }
+    if (sscanf(tilt_s, "%lf", &tilt) != 1) {
+	Err_Append("Expected float value for distance, got ");
+	Err_Append(tilt_s);
+	Err_Append(".\n");
+	return 0;
+    }
+    if (sscanf(a0_s, "%lf", &a0) != 1) {
+	Err_Append("Expected float value for distance, got ");
+	Err_Append(a0_s);
+	Err_Append(".\n");
+	return 0;
+    }
+
+    c = use_deg ? RAD_DEG : 1.0;
+    printf("%lf\n", GeogBeamHt(d, tilt * c, a0));
     return 1;
 }

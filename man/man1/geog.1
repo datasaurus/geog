@@ -4,7 +4,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.10 $ $Date: 2009/12/04 18:15:34 $
+.\" $Revision: 1.11 $ $Date: 2009/12/08 21:01:39 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
@@ -45,6 +45,12 @@ distance \fIdist\fP along a great circle from point (\fIlon\fP,\ \fIlat\fP).
 If \fIlon\fP \fIlat\fP \fIdir\fP \fIdist\fP are not given on the command line,
 values are read from standard input.  There will be one line of output for
 every four values read in.
+.TP
+\fBgeog\fP \fBbeam_ht\fP \fIdistance\fP \fItilt\fP \fIearth_radius\fP
+Computes the height attained after travelling distance \fIdistance\fP
+along a beam at angle \fItilt\fP above horizontal, assuming Earth radius
+\fIearth_radius\fP.  \fId\fP and \fIearth_radius\fP must use the same unit,
+which will also be the unit of the result.
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
 .SH AUTHOR
