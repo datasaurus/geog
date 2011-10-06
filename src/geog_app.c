@@ -2,12 +2,34 @@
    -	geog_app.c --
    -		This file defines an application that does geography calculations.
    -
-   .	Copyright (c) 2008 Gordon D. Carrie
-   .	All rights reserved.
+   .	Copyright (c) 2011, Gordon D. Carrie. All rights reserved.
+   .	
+   .	Redistribution and use in source and binary forms, with or without
+   .	modification, are permitted provided that the following conditions
+   .	are met:
+   .	
+   .	    * Redistributions of source code must retain the above copyright
+   .	    notice, this list of conditions and the following disclaimer.
+   .
+   .	    * Redistributions in binary form must reproduce the above copyright
+   .	    notice, this list of conditions and the following disclaimer in the
+   .	    documentation and/or other materials provided with the distribution.
+   .	
+   .	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   .	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   .	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   .	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+   .	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+   .	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+   .	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+   .	PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+   .	LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+   .	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+   .	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.35 $ $Date: 2010/10/08 19:37:28 $
+   .	$Revision: 1.36 $ $Date: 2011/02/25 22:12:48 $
  */
 
 #include <stdlib.h>
@@ -20,7 +42,7 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 7
+#define NCMD 8
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -28,6 +50,7 @@ callback rearth_cb;
 callback lonr_cb;
 callback latn_cb;
 callback dist_cb;
+callback sum_dist_cb;
 callback az_cb;
 callback step_cb;
 callback beam_ht_cb;
@@ -42,10 +65,10 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "az",
+    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "sum_dist", "az",
 	"step", "beam_ht"};
-    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, az_cb,
-	step_cb, beam_ht_cb};
+    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, sum_dist_cb,
+	az_cb, step_cb, beam_ht_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -187,7 +210,7 @@ int dist_cb(int argc, char *argv[])
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append(" lat1 lon1 lat2 lon2\n");
+	Err_Append(" lon1 lat1 lon2 lat2\n");
 	return 0;
     }
     lon1_s = argv[2];
@@ -222,6 +245,39 @@ int dist_cb(int argc, char *argv[])
     }
     c = (use_deg ? RAD_DEG : 1.0);
     printf("%f\n", GeogDist(lon1 * c, lat1 * c, lon2 * c, lat2 * c) / c);
+    return 1;
+}
+
+/*
+   Compute length of track given as lon lat pairs in stdin.
+   Input can be degrees or radians. Output always radians.
+ */
+
+int sum_dist_cb(int argc, char *argv[])
+{
+    double lon0, lon, lat0, lat;	/* Longitude, latitude from input */
+    double tot;				/* Total distance */
+    double c;
+
+    if (argc != 2) {
+	Err_Append("Usage: ");
+	Err_Append(cmd);
+	Err_Append(" ");
+	Err_Append(cmd1);
+	return 0;
+    }
+
+    if (scanf(" %lf %lf", &lon0, &lat0) != 2) {
+	Err_Append("No input. ");
+	return 0;
+    }
+    c = (use_deg ? RAD_DEG : 1.0);
+    for (tot = 0.0; scanf(" %lf %lf", &lon, &lat) == 2 ; ) {
+	tot += GeogDist(lon0 * c, lat0 * c, lon * c, lat * c);
+	lon0 = lon;
+	lat0 = lat;
+    }
+    printf("%lf\n", tot);
     return 1;
 }
 
