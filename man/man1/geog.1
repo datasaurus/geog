@@ -25,7 +25,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.12 $ $Date: 2011/02/25 22:13:12 $
+.\" $Revision: 1.13 $ $Date: 2011/10/06 19:16:11 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
@@ -77,6 +77,11 @@ Computes the height attained after travelling distance \fIdistance\fP
 along a beam at angle \fItilt\fP above horizontal, assuming Earth radius
 \fIearth_radius\fP.  \fId\fP and \fIearth_radius\fP must use the same unit,
 which will also be the unit of the result.
+.TP
+\fBgeog\fP \fBcontain_pt\fP \fIlon\fP \fIlat\fP \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP ...
+Prints "\fBin\fP" if point \fIlon\fP \fIlat\fP is contained in the polygon
+defined by \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP ... Otherwise, it
+prints "\fBout\fP".
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
 .SH AUTHOR

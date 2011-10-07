@@ -29,12 +29,13 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.36 $ $Date: 2011/02/25 22:12:48 $
+   .	$Revision: 1.37 $ $Date: 2011/10/06 19:15:28 $
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "alloc.h"
 #include "err_msg.h"
 #include "geog_lib.h"
 
@@ -42,7 +43,7 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 8
+#define NCMD 9
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -54,6 +55,7 @@ callback sum_dist_cb;
 callback az_cb;
 callback step_cb;
 callback beam_ht_cb;
+callback contain_pt_cb;
 
 /* If true, use degrees instead of radians */
 int use_deg = 0;
@@ -66,9 +68,9 @@ int main(int argc, char *argv[])
 
     /* Arrays of subcommand names and associated callbacks */
     char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "sum_dist", "az",
-	"step", "beam_ht"};
+	"step", "beam_ht", "contain_pt"};
     callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, sum_dist_cb,
-	az_cb, step_cb, beam_ht_cb};
+	az_cb, step_cb, beam_ht_cb, contain_pt_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -425,5 +427,64 @@ int beam_ht_cb(int argc, char *argv[])
 
     c = use_deg ? RAD_DEG : 1.0;
     printf("%lf\n", GeogBeamHt(d, tilt * c, a0));
+    return 1;
+}
+
+int contain_pt_cb(int argc, char *argv[])
+{
+    char *lon_s, *lat_s;
+    char **lon_sp, **lat_sp;
+    struct GeogPt pt, *pts, *pts_p;
+    size_t n_pts;
+    double c;
+
+    if ( argc < 10 || argc % 2 != 0 ) {
+	Err_Append("Usage: ");
+	Err_Append(cmd);
+	Err_Append(" ");
+	Err_Append(cmd1);
+	Err_Append(" contain_pt lon lat lon1 lat1 lon2 lat2");
+	return 0;
+    }
+    c = use_deg ? RAD_DEG : 1.0;
+    lon_s = argv[2];
+    lat_s = argv[3];
+    if ( sscanf(lon_s, "%lf", &pt.lon) != 1 ) {
+	Err_Append("Expected double value for longitude, got ");
+	Err_Append(lon_s);
+	Err_Append(". ");
+	return 0;
+    }
+    pt.lon *= c;
+    if ( sscanf(lat_s, "%lf", &pt.lat) != 1 ) {
+	Err_Append("Expected double value for latitude, got ");
+	Err_Append(lat_s);
+	Err_Append(". ");
+	return 0;
+    }
+    pt.lat *= c;
+    n_pts = (argc - 4) / 2;
+    if ( !(pts = CALLOC(n_pts, sizeof(struct GeogPt))) ) {
+	Err_Append("Could not allocate memory for polygon. ");
+	return 0;
+    }
+    for (lon_sp = argv + 4, lat_sp = argv + 5, pts_p = pts;
+	    lat_sp < argv + argc; lon_sp++, lat_sp++, pts_p++) {
+	if ( sscanf(*lon_sp, "%lf", &pts_p->lon) != 1 ) {
+	    Err_Append("Expected double value for longitude, got ");
+	    Err_Append(*lon_sp);
+	    Err_Append(". ");
+	    return 0;
+	}
+	pts_p->lon *= c;
+	if ( sscanf(*lat_sp, "%lf", &pts_p->lat) != 1 ) {
+	    Err_Append("Expected double value for latitude, got ");
+	    Err_Append(*lat_sp);
+	    Err_Append(". ");
+	    return 0;
+	}
+	pts_p->lat *= c;
+    }
+    printf("%s\n", GeogContainPt(pt, pts, n_pts) ? "in" : "out");
     return 1;
 }
