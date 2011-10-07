@@ -4,12 +4,34 @@
    -		calculations and manage geographic data.
    -		See geog_lib (3).
    -
-   .	Copyright (c) 2008 Gordon D. Carrie
-   .	All rights reserved.
+   .	Copyright (c) 2011, Gordon D. Carrie. All rights reserved.
+   .	
+   .	Redistribution and use in source and binary forms, with or without
+   .	modification, are permitted provided that the following conditions
+   .	are met:
+   .	
+   .	    * Redistributions of source code must retain the above copyright
+   .	    notice, this list of conditions and the following disclaimer.
+   .
+   .	    * Redistributions in binary form must reproduce the above copyright
+   .	    notice, this list of conditions and the following disclaimer in the
+   .	    documentation and/or other materials provided with the distribution.
+   .	
+   .	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   .	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   .	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   .	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+   .	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+   .	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+   .	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+   .	PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+   .	LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+   .	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+   .	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.31 $ $Date: 2009/12/08 20:55:46 $
+   .	$Revision: 1.32 $ $Date: 2011/02/25 22:12:10 $
  */
 
 #include <math.h>
@@ -105,4 +127,72 @@ void GeogStep(const double o1, const double a1, const double d, const double s,
 double GeogBeamHt(double d, double tilt, double a0)
 {
     return sqrt(a0 * a0 + 2 * a0 * d * sin(tilt) + d * d) - a0;
+}
+
+/*
+   This function returns true if polygon pts contains point at longitude lon,
+   latitude lat.  pts is an array of lon0, lat0, lon1, lat1, ... values for
+   n_pts points.
+ */
+
+int GeogContainPt(const struct GeogPt pt, const struct GeogPt *pts,
+	const size_t n_pts)
+{
+    int mrdx;				/* Number of times a line crosses
+					   meridian containing (lon, lat) */
+    int lnx;				/* Number of times a line crosses line
+					   from (lon, lat) to North pole */
+    const struct GeogPt *p0, *p1;	/* Points from pts */
+    double lon0, lat0;			/* p0 */
+    double lon1, lat1;			/* p1 */
+    double z;				/* Distance along Earth's axis, from
+					   center of Earth */
+
+    /*
+       Loop through segments in pts, counting number of times pts
+       crosses meridian, and number of crossings between (lon, lat) and
+       North pole
+     */
+
+    for (mrdx = lnx = 0, p0 = pts + n_pts - 1, p1 = pts;
+	    p1 < pts + n_pts; p0 = p1++) {
+
+	/*
+	   Determine if segment defined by p0--p1 straddles meridian
+	   containing geoPt, or is on boundary.  Do not count segments on
+	   boundary as more than one crossing
+	 */
+
+	lon0 = GeogLonR(p0->lon, pt.lon);
+	lon1 = GeogLonR(p1->lon, pt.lon);
+	if ( ( fabs(lon0 - lon1) < M_PI
+		    && (   (lon0 < pt.lon && pt.lon <= lon1)
+			|| (lon1 < pt.lon && pt.lon <= lon0))) ) {
+	    double xlat;		/* Latitude of segment crossing */
+
+	    mrdx++;
+	    xlat = lat0 + (pt.lon - lon0) * (lat1 - lat0) / (lon1 - lon0);
+	    if ( xlat > pt.lat ) {
+		lnx = !lnx;
+	    }
+
+	}
+    }
+
+    if (mrdx % 2 == 1) {
+	/*
+	   Odd number of meridian crossings => region contains a pole.
+	   Assume pole is that of hemisphere containing pts mean.
+	   If pts polygon contains North Pole, negate the result.
+	 */
+
+	for (p0 = pts, z = 0.0; p0 < pts + n_pts; p0++) {
+	    z += sin(p0->lat);
+	}
+	if (z > 0.0) {
+	    lnx = !lnx;
+	}
+
+    }
+    return lnx;
 }
