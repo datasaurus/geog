@@ -29,7 +29,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.37 $ $Date: 2011/10/06 19:15:28 $
+   .	$Revision: 1.38 $ $Date: 2011/10/07 22:41:44 $
  */
 
 #include <stdlib.h>
@@ -443,7 +443,7 @@ int contain_pt_cb(int argc, char *argv[])
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append(" contain_pt lon lat lon1 lat1 lon2 lat2");
+	Err_Append(" contain_pt lon lat lon1 lat1 lon2 lat2 ...");
 	return 0;
     }
     c = use_deg ? RAD_DEG : 1.0;
@@ -469,7 +469,7 @@ int contain_pt_cb(int argc, char *argv[])
 	return 0;
     }
     for (lon_sp = argv + 4, lat_sp = argv + 5, pts_p = pts;
-	    lat_sp < argv + argc; lon_sp++, lat_sp++, pts_p++) {
+	    lat_sp < argv + argc; lon_sp += 2, lat_sp += 2, pts_p++) {
 	if ( sscanf(*lon_sp, "%lf", &pts_p->lon) != 1 ) {
 	    Err_Append("Expected double value for longitude, got ");
 	    Err_Append(*lon_sp);
