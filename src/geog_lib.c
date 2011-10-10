@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.32 $ $Date: 2011/02/25 22:12:10 $
+   .	$Revision: 1.33 $ $Date: 2011/10/07 22:40:35 $
  */
 
 #include <math.h>
@@ -171,6 +171,8 @@ int GeogContainPt(const struct GeogPt pt, const struct GeogPt *pts,
 	    double xlat;		/* Latitude of segment crossing */
 
 	    mrdx++;
+	    lat0 = p0->lat;
+	    lat1 = p1->lat;
 	    xlat = lat0 + (pt.lon - lon0) * (lat1 - lat0) / (lon1 - lon0);
 	    if ( xlat > pt.lat ) {
 		lnx = !lnx;
