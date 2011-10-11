@@ -25,7 +25,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.13 $ $Date: 2011/10/06 19:16:11 $
+.\" $Revision: 1.14 $ $Date: 2011/10/07 22:42:53 $
 .\"
 .TH geog 3 "geography application"
 .SH NAME
@@ -82,6 +82,15 @@ which will also be the unit of the result.
 Prints "\fBin\fP" if point \fIlon\fP \fIlat\fP is contained in the polygon
 defined by \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP ... Otherwise, it
 prints "\fBout\fP".
+.TP
+\fBgeog\fP \fBseg_box\fP \fIlon\fP \fIlat\fP \fIdirn\fP \fIlen\fP \fIwidth_2\fP \fIearth_radius\fP
+Draws a box around a line segment.  Point with longitude \fIlon\fP, latitude
+\fIlat\fP determines one end of the segment.  Segment will be oriented in
+direction \fIdirn\fP from (\fIlat\fP \fIlon\fP).  Segment will have length
+\fIlen\fP.  Box will extend \fIwidth_2\fP on each side of the segment. Thus box
+will have a width of \fB2\fP \fB*\fP width_2.  \fIearth_radius\fP is radius of
+Earth in a user chosen unit.  \fIlen\fP and \fIwidth_2\fP must use the same unit.
+
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
 .SH AUTHOR
