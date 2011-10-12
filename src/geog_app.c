@@ -29,7 +29,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.39 $ $Date: 2011/10/10 20:06:02 $
+   .	$Revision: 1.40 $ $Date: 2011/10/11 22:56:51 $
  */
 
 #include <stdlib.h>
@@ -43,7 +43,7 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 10
+#define NCMD 9
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -56,7 +56,6 @@ callback az_cb;
 callback step_cb;
 callback beam_ht_cb;
 callback contain_pt_cb;
-callback seg_box_cb;
 
 /* If true, use degrees instead of radians */
 int use_deg = 0;
@@ -69,9 +68,9 @@ int main(int argc, char *argv[])
 
     /* Arrays of subcommand names and associated callbacks */
     char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "sum_dist", "az",
-	"step", "beam_ht", "contain_pt", "seg_box"};
+	"step", "beam_ht", "contain_pt"};
     callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, sum_dist_cb,
-	az_cb, step_cb, beam_ht_cb, contain_pt_cb, seg_box_cb};
+	az_cb, step_cb, beam_ht_cb, contain_pt_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -484,104 +483,5 @@ int contain_pt_cb(int argc, char *argv[])
 	pts_p->lat *= c;
     }
     printf("%s\n", GeogContainPt(pt, pts, n_pts) ? "in" : "out");
-    return 1;
-}
-
-/*
-   This subcommand draws a box around a line segment.
-   Usage: geog seg_box lon lat dirn len width_2 earth_radius
-   Point with longitude lon, latitude lat determines one end of the segment.
-   Segment will be oriented in direction dirn from (lat lon).
-   Segment will have length len.
-   Box will extend width_2 on each side of the segment, so box will have
-       a width of 2*width_2.
-   earth_radius = radius of Earth in a user chosen unit. len and width_2
-   must use the same unit.
- */
-
-int seg_box_cb(int argc, char *argv[])
-{
-    char *lon_s, *lat_s, *dirn_s, *len_s, *w2_s, *a0_s;
-    double lon, lat, dirn, len, w2, a0, c,
-	   lon1, lat1, lon2, lat2, lon3, lat3, lon4, lat4 ;
-
-    /*
-       Parse command line
-     */
-
-    if ( argc != 8 ) {
-	Err_Append("Usage: ");
-	Err_Append(cmd);
-	Err_Append(" ");
-	Err_Append(cmd1);
-	Err_Append("lon lat dirn len width_2 earth_radius");
-	return 0;
-    }
-    lon_s = argv[2];
-    if (sscanf(lon_s, "%lf", &lon) != 1) {
-	Err_Append("Expected float value for lon, got ");
-	Err_Append(lon_s);
-	Err_Append(".\n");
-	return 0;
-    }
-    lat_s = argv[3];
-    if (sscanf(lat_s, "%lf", &lat) != 1) {
-	Err_Append("Expected float value for lat, got ");
-	Err_Append(lat_s);
-	Err_Append(".\n");
-	return 0;
-    }
-    dirn_s = argv[4];
-    if (sscanf(dirn_s, "%lf", &dirn) != 1) {
-	Err_Append("Expected float value for azimuth, got ");
-	Err_Append(dirn_s);
-	Err_Append(".\n");
-	return 0;
-    }
-    len_s = argv[5];
-    if (sscanf(len_s, "%lf", &len) != 1) {
-	Err_Append("Expected float value for range, got ");
-	Err_Append(len_s);
-	Err_Append(".\n");
-	return 0;
-    }
-    w2_s = argv[6];
-    if (sscanf(w2_s, "%lf", &w2) != 1) {
-	Err_Append("Expected float value for range, got ");
-	Err_Append(w2_s);
-	Err_Append(".\n");
-	return 0;
-    }
-    a0_s = argv[7];
-    if (sscanf(a0_s, "%lf", &a0) != 1) {
-	Err_Append("Expected float value for range, got ");
-	Err_Append(a0_s);
-	Err_Append(".\n");
-	return 0;
-    }
-
-    /*
-       Convert to radians
-     */
-
-    c = use_deg ? RAD_DEG : 1.0;
-    lon *= c;
-    lat *= c;
-    dirn *= c;
-    len /= a0;
-    w2 /= a0;
-
-    /*
-       Step to each corner and print the lon lat coordinates.
-     */
-
-    GeogStep(lon, lat, dirn + M_PI_2, w2, &lon1, &lat1);
-    GeogStep(lon1, lat1, dirn, len, &lon2, &lat2);
-    GeogStep(lon, lat, dirn - M_PI_2, w2, &lon4, &lat4);
-    GeogStep(lon4, lat4, dirn, len, &lon3, &lat3);
-    printf("%lf %lf %lf %lf %lf %lf %lf %lf\n",
-	    lon1 / c, lat1 / c, lon2 / c, lat2 / c,
-	    lon3 / c, lat3 / c, lon4 / c, lat4 / c);
-
     return 1;
 }
