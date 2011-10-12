@@ -29,7 +29,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.40 $ $Date: 2011/10/11 22:56:51 $
+   .	$Revision: 1.41 $ $Date: 2011/10/12 20:30:30 $
  */
 
 #include <stdlib.h>
@@ -279,7 +279,7 @@ int sum_dist_cb(int argc, char *argv[])
 	lon0 = lon;
 	lat0 = lat;
     }
-    printf("%lf\n", tot);
+    printf("%lf\n", tot / c);
     return 1;
 }
 
@@ -339,7 +339,7 @@ int step_cb(int argc, char *argv[])
     if (argc == 2) {
 	while (scanf("%lf %lf %lf %lf", &lon1, &lat1, &dirn, &dist) == 4) {
 	    GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
-	    printf("%f %f\n", lon2 * c, lat2 * c);
+	    printf("%f %f\n", lon2 / c, lat2 / c);
 	}
     } else if (argc == 6) {
 	char *lat1_s, *lon1_s, *dirn_s, *dist_s;
@@ -373,7 +373,7 @@ int step_cb(int argc, char *argv[])
 	    return 0;
 	}
 	GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
-	printf("%f %f\n", lon2 * c, lat2 * c);
+	printf("%f %f\n", lon2 / c, lat2 / c);
     } else {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
