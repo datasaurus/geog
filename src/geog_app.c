@@ -29,7 +29,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.41 $ $Date: 2011/10/12 20:30:30 $
+   .	$Revision: 1.42 $ $Date: 2011/10/12 23:02:07 $
  */
 
 #include <stdlib.h>
@@ -58,7 +58,7 @@ callback beam_ht_cb;
 callback contain_pt_cb;
 
 /* If true, use degrees instead of radians */
-int use_deg = 0;
+int use_deg = 1;
 
 int main(int argc, char *argv[])
 {
