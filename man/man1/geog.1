@@ -25,9 +25,9 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.17 $ $Date: 2012/02/24 20:21:22 $
+.\" $Revision: 1.18 $ $Date: 2012/02/24 22:42:36 $
 .\"
-.TH geog 3 "geography application"
+.TH geog 1 "geography application"
 .SH NAME
 geog \- geography application
 .SH SYNOPSIS
@@ -35,9 +35,7 @@ geog \- geography application
 .SH DESCRIPTION
 The \fBgeog\fP application calculates distances and angles on Earth's surface.
 
-Angles are measured in degrees by default, or if environment variable
-\fBANGLE_UNIT\fP is set to \fBDEGREE\fP.  Angles are measured in radians if
-environment variable \fBANGLE_UNIT\fP is set to \fBRADIAN\fP.
+Angles are measured in degrees.
 
 The \fIgeog_command\fP argument determines \fBgeog\fP's behavior.
 \fBgeog_command\fP must be one of the following.
@@ -50,7 +48,7 @@ centered about \fIreflon\fP.  It prints a value that equals
 .TP
 \fBgeog\fP \fBlatn\fP \fIlat\fP
 Computes the principle latitude corresponding to \fIlat\fP.  It prints
-the latitude reached by going \fIlat\fP radians north of the Equator.
+the latitude reached by going \fIlat\fP degrees north of the Equator.
 .TP
 \fBgeog\fP \fBdist\fP \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP
 Computes the great circle distance from (\fIlon1\fP,\ \fIlat1\fP) to
@@ -58,8 +56,7 @@ Computes the great circle distance from (\fIlon1\fP,\ \fIlat1\fP) to
 .TP
 \fBgeog\fP \fBsum_dist\fP
 Computes the distance for a track given as "longitude latitude" pairs read from
-standard input. Input unit is determined by \fBANGLE_UNIT\fP. Output is always
-radians.
+standard input. Result is given in great circle degrees.
 .TP
 \fBgeog\fP \fBaz\fP \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP
 Computes the azimuth from (\fIlon1\fP,\ \fIlat1\fP) to (\fIlon2\fP,\ \fIlat2\fP).
@@ -88,6 +85,30 @@ Stores a polygon defined by \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP ...
 Then it reads lines from standard input. If a line starts with a pair of
 float values specifying the longitude and latitude of a point in the
 polygon, the input line is printed to standard output.
+.TP
+\fBgeog\fP \fBvproj\fP \fIlon1\fP \fIlat1\fP \fIlon2\fP \fIlat2\fP \fIdist\fP
+This subcommand projects points onto a vertical plane.
+The vertical plane rises above the great circle connecting the point with
+geographic coordinates \fIlon1\fP \fIlat1\fP to the point with geographical
+coordinates \fIlon2\fP \fIlat2\fP, which have given separation \fIdist\fP, in
+some distance unit.  The process will then read from standard input lines of
+form:
+.nf
+
+lon lat z
+
+.fi
+giving the longitude, latitude, and altitude of points to project.
+Altitude must use the same unit as \fIdist\fP. For each line of input,
+standard output will receive a line of form:
+.nf
+
+x z
+
+.fi
+giving the horizontal and vertical coordinates on the vertical plane in a
+coordinate system with origin at coordinates \fIlon1\fP \fIlat1\fP
+\fIz\fP\fB=0\fP.
 
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)

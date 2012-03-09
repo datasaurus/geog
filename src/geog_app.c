@@ -29,12 +29,13 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.43 $ $Date: 2012/02/24 20:20:42 $
+   .	$Revision: 1.44 $ $Date: 2012/02/24 22:42:36 $
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "alloc.h"
 #include "err_msg.h"
 #include "geog_lib.h"
@@ -43,7 +44,7 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 10
+#define NCMD 11
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -57,21 +58,18 @@ callback step_cb;
 callback beam_ht_cb;
 callback contain_pt_cb;
 callback contain_pts_cb;
-
-/* Default angle unit is degrees. Make this true to use radians. */
-int use_rad = 0;
+callback vproj_cb;
 
 int main(int argc, char *argv[])
 {
-    char *ang_u;	/* Angle unit */
     int i;		/* Index for subcommand in argv[1] */
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
     char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "sum_dist", "az",
-	"step", "beam_ht", "contain_pt", "contain_pts"};
+	"step", "beam_ht", "contain_pt", "contain_pts", "vproj"};
     callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, sum_dist_cb,
-	az_cb, step_cb, beam_ht_cb, contain_pt_cb, contain_pts_cb};
+	az_cb, step_cb, beam_ht_cb, contain_pt_cb, contain_pts_cb, vproj_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -79,18 +77,6 @@ int main(int argc, char *argv[])
 	exit(1);
     }
     cmd1 = argv[1];
-
-    /* Check for angle unit */
-    if ((ang_u = getenv("ANGLE_UNIT")) != NULL) {
-	if (strcmp(ang_u, "DEGREE") == 0) {
-	    use_rad = 0;
-	} else if (strcmp(ang_u, "RADIAN") == 0) {
-	    use_rad = 1;
-	} else {
-	    fprintf(stderr, "%s: Unknown angle unit %s.\n", cmd, ang_u);
-	    exit(1);
-	}
-    }
 
     /* Search cmd1v for cmd1.  When match is found, evaluate the associated
      * callback from cb1v. */
@@ -148,7 +134,6 @@ int lonr_cb(int argc, char *argv[])
 {
     char *l_s, *r_s;		/* Strings from command line */
     double l, r;		/* Values from command line */
-    double c;
 
     if (argc != 4) {
 	Err_Append("Usage: ");
@@ -172,8 +157,7 @@ int lonr_cb(int argc, char *argv[])
 	Err_Append(".\n");
 	return 0;
     }
-    c = (use_rad ? DEG_RAD : 1.0);
-    printf("%lf\n", GeogLonR(l * c, r * c) / c);
+    printf("%lf\n", GeogLonR(l * RAD_DEG, r * RAD_DEG) * DEG_RAD);
     return 1;
 }
 
@@ -181,7 +165,6 @@ int latn_cb(int argc, char *argv[])
 {
     char *l_s;			/* String from command line */
     double l;			/* Latitude value from command line */
-    double c;
 
     if (argc != 3) {
 	Err_Append("Usage: ");
@@ -198,15 +181,14 @@ int latn_cb(int argc, char *argv[])
 	Err_Append(".\n");
 	return 0;
     }
-    c = (use_rad ? DEG_RAD : 1.0);
-    printf("%f\n", GeogLatN(l * c) / c);
+    printf("%f\n", GeogLatN(l * RAD_DEG) * DEG_RAD);
     return 1;
 }
 
 int dist_cb(int argc, char *argv[])
 {
     char *lon1_s, *lat1_s, *lon2_s,  *lat2_s;
-    double lon1, lat1, lon2, lat2, c;
+    double lon1, lat1, lon2, lat2;
 
     if (argc != 6) {
 	Err_Append("Usage: ");
@@ -246,21 +228,20 @@ int dist_cb(int argc, char *argv[])
 	Err_Append(".\n");
 	return 0;
     }
-    c = (use_rad ? DEG_RAD : 1.0);
-    printf("%f\n", GeogDist(lon1 * c, lat1 * c, lon2 * c, lat2 * c) / c);
+    printf("%f\n", GeogDist(lon1 * RAD_DEG, lat1 * RAD_DEG,
+		lon2 * RAD_DEG, lat2 * RAD_DEG) * DEG_RAD);
     return 1;
 }
 
 /*
    Compute length of track given as lon lat pairs in stdin.
-   Input can be degrees or radians. Output always radians.
+   Input and output are in degrees.
  */
 
 int sum_dist_cb(int argc, char *argv[])
 {
     double lon0, lon, lat0, lat;	/* Longitude, latitude from input */
     double tot;				/* Total distance */
-    double c;
 
     if (argc != 2) {
 	Err_Append("Usage: ");
@@ -274,20 +255,20 @@ int sum_dist_cb(int argc, char *argv[])
 	Err_Append("No input. ");
 	return 0;
     }
-    c = (use_rad ? DEG_RAD : 1.0);
     for (tot = 0.0; scanf(" %lf %lf", &lon, &lat) == 2 ; ) {
-	tot += GeogDist(lon0 * c, lat0 * c, lon * c, lat * c);
+	tot += GeogDist(lon0 * RAD_DEG, lat0 * RAD_DEG,
+		lon * RAD_DEG, lat * RAD_DEG);
 	lon0 = lon;
 	lat0 = lat;
     }
-    printf("%lf\n", tot / c);
+    printf("%lf\n", tot * DEG_RAD);
     return 1;
 }
 
 int az_cb(int argc, char *argv[])
 {
     char *lon1_s, *lat1_s, *lon2_s,  *lat2_s;
-    double lon1, lat1, lon2, lat2, c;
+    double lon1, lat1, lon2, lat2;
 
     if (argc != 6) {
 	Err_Append("Usage: ");
@@ -327,20 +308,20 @@ int az_cb(int argc, char *argv[])
 	Err_Append(".\n");
 	return 0;
     }
-    c = (use_rad ? DEG_RAD : 1.0);
-    printf("%f\n", GeogAz(lon1 * c, lat1 * c, lon2 * c,  lat2 * c) / c);
+    printf("%f\n", GeogAz(lon1 * RAD_DEG, lat1 * RAD_DEG,
+		lon2 * RAD_DEG,  lat2 * RAD_DEG) * DEG_RAD);
     return 1;
 }
 
 int step_cb(int argc, char *argv[])
 {
-    double lon1, lat1, dirn, dist, lon2, lat2, c;
+    double lon1, lat1, dirn, dist, lon2, lat2;
 
-    c = use_rad ? DEG_RAD : 1.0;
     if (argc == 2) {
 	while (scanf("%lf %lf %lf %lf", &lon1, &lat1, &dirn, &dist) == 4) {
-	    GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
-	    printf("%f %f\n", lon2 / c, lat2 / c);
+	    GeogStep(lon1 * RAD_DEG, lat1 * RAD_DEG,
+		    dirn * RAD_DEG, dist * RAD_DEG, &lon2, &lat2);
+	    printf("%f %f\n", lon2 * DEG_RAD, lat2 * DEG_RAD);
 	}
     } else if (argc == 6) {
 	char *lat1_s, *lon1_s, *dirn_s, *dist_s;
@@ -373,8 +354,9 @@ int step_cb(int argc, char *argv[])
 	    Err_Append(".\n");
 	    return 0;
 	}
-	GeogStep(lon1 * c, lat1 * c, dirn * c, dist * c, &lon2, &lat2);
-	printf("%f %f\n", lon2 / c, lat2 / c);
+	GeogStep(lon1 * RAD_DEG, lat1 * RAD_DEG,
+		dirn * RAD_DEG, dist * RAD_DEG, &lon2, &lat2);
+	printf("%f %f\n", lon2 * DEG_RAD, lat2 * DEG_RAD);
     } else {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
@@ -389,7 +371,7 @@ int step_cb(int argc, char *argv[])
 int beam_ht_cb(int argc, char *argv[])
 {
     char *d_s, *tilt_s, *a0_s;
-    double d, tilt, a0, c;
+    double d, tilt, a0;
 
     if (argc != 5) {
 	Err_Append("Usage: ");
@@ -423,8 +405,7 @@ int beam_ht_cb(int argc, char *argv[])
 	return 0;
     }
 
-    c = use_rad ? DEG_RAD : 1.0;
-    printf("%lf\n", GeogBeamHt(d, tilt * c, a0));
+    printf("%lf\n", GeogBeamHt(d, tilt * RAD_DEG, a0));
     return 1;
 }
 
@@ -434,7 +415,6 @@ int contain_pt_cb(int argc, char *argv[])
     char **lon_sp, **lat_sp;
     struct GeogPt pt, *pts, *pts_p;
     size_t n_pts;
-    double c;
 
     if ( argc < 10 || argc % 2 != 0 ) {
 	Err_Append("Usage: ");
@@ -444,7 +424,6 @@ int contain_pt_cb(int argc, char *argv[])
 	Err_Append(" lon lat lon1 lat1 lon2 lat2 ...");
 	return 0;
     }
-    c = use_rad ? DEG_RAD : 1.0;
     lon_s = argv[2];
     lat_s = argv[3];
     if ( sscanf(lon_s, "%lf", &pt.lon) != 1 ) {
@@ -453,14 +432,14 @@ int contain_pt_cb(int argc, char *argv[])
 	Err_Append(". ");
 	return 0;
     }
-    pt.lon *= c;
+    pt.lon *= RAD_DEG;
     if ( sscanf(lat_s, "%lf", &pt.lat) != 1 ) {
 	Err_Append("Expected double value for latitude, got ");
 	Err_Append(lat_s);
 	Err_Append(". ");
 	return 0;
     }
-    pt.lat *= c;
+    pt.lat *= RAD_DEG;
     n_pts = (argc - 4) / 2;
     if ( !(pts = CALLOC(n_pts, sizeof(struct GeogPt))) ) {
 	Err_Append("Could not allocate memory for polygon. ");
@@ -474,14 +453,14 @@ int contain_pt_cb(int argc, char *argv[])
 	    Err_Append(". ");
 	    return 0;
 	}
-	pts_p->lon *= c;
+	pts_p->lon *= RAD_DEG;
 	if ( sscanf(*lat_sp, "%lf", &pts_p->lat) != 1 ) {
 	    Err_Append("Expected double value for latitude, got ");
 	    Err_Append(*lat_sp);
 	    Err_Append(". ");
 	    return 0;
 	}
-	pts_p->lat *= c;
+	pts_p->lat *= RAD_DEG;
     }
     printf("%s\n", GeogContainPt(pt, pts, n_pts) ? "in" : "out");
     return 1;
@@ -493,7 +472,6 @@ int contain_pts_cb(int argc, char *argv[])
     char **lon_sp, **lat_sp;
     struct GeogPt pt, *pts, *pts_p;
     size_t n_pts;
-    double c;
     char buf[LEN];
 
     if ( argc < 8 || argc % 2 != 0 ) {
@@ -504,7 +482,6 @@ int contain_pts_cb(int argc, char *argv[])
 	Err_Append(" lon1 lat1 lon2 lat2 ...");
 	return 0;
     }
-    c = use_rad ? DEG_RAD : 1.0;
     n_pts = (argc - 2) / 2;
     if ( !(pts = CALLOC(n_pts, sizeof(struct GeogPt))) ) {
 	Err_Append("Could not allocate memory for polygon. ");
@@ -518,23 +495,110 @@ int contain_pts_cb(int argc, char *argv[])
 	    Err_Append(". ");
 	    return 0;
 	}
-	pts_p->lon *= c;
+	pts_p->lon *= RAD_DEG;
 	if ( sscanf(*lat_sp, "%lf", &pts_p->lat) != 1 ) {
 	    Err_Append("Expected double value for latitude, got ");
 	    Err_Append(*lat_sp);
 	    Err_Append(". ");
 	    return 0;
 	}
-	pts_p->lat *= c;
+	pts_p->lat *= RAD_DEG;
     }
     while ( fgets(buf, LEN, stdin) ) {
 	if ( sscanf(buf, " %lf %lf ", &pt.lon, &pt.lat) == 2 ) {
-	    pt.lon *= c;
-	    pt.lat *= c;
+	    pt.lon *= RAD_DEG;
+	    pt.lat *= RAD_DEG;
 	    if ( GeogContainPt(pt, pts, n_pts) ) {
 		fputs(buf, stdout);
 	    }
 	}
+    }
+    return 1;
+}
+
+/*
+   This subcommand projects points onto a vertical plane.
+
+   geog vproj lon1 lat1 lon2 lat2 dist
+
+   The vertical plane rises above the great circle connecting points
+   (lon1 lat1) to (lon2 lat2), with given separation dist, in some distance
+   unit.  The process will then read from standard input line of form:
+
+   lon lat z
+
+   Giving the longitude, latitude, and altitude of points to project.
+   Altitude must use the same unit as dist. For each line of input,
+   standard output will receive a line of form:
+
+   x z
+
+   giving the horizontal and vertical coordinates on the vertical plane in a
+   coordinate system with origin lon1 lat1 z=0.
+ */
+
+int vproj_cb(int argc, char *argv[])
+{
+    char *lon1_s, *lat1_s, *lon2_s, *lat2_s, *dist_s;
+    double lon1, lat1, lon2, lat2, dist, z;
+    double azg;			/* Azimuth from (lon1 lat1) to (lon2 lat2) */
+    double lon, lat;
+    double az;
+    double a0;			/* Earth radius */
+    double d;			/* Distance along ground from origin to point */
+    double x;			/* Abscissa of event on vertical plane */
+
+    if ( argc != 7 ) {
+	Err_Append("Usage: ");
+	Err_Append(cmd);
+	Err_Append(" ");
+	Err_Append(cmd1);
+	Err_Append(" lon1 lat1 lon2 lat2 distance");
+	return 0;
+    }
+    lon1_s = argv[2];
+    lat1_s = argv[3];
+    lon2_s = argv[4];
+    lat2_s = argv[5];
+    dist_s = argv[6];
+    if ( sscanf(lon1_s, "%lf", &lon1) != 1 ) {
+	Err_Append("Expected float value for longitude of first point, got ");
+	Err_Append(lon1_s);
+	return 0;
+    }
+    if ( sscanf(lat1_s, "%lf", &lat1) != 1 ) {
+	Err_Append("Expected float value for latitude of first point, got ");
+	Err_Append(lat1_s);
+	return 0;
+    }
+    if ( sscanf(lon2_s, "%lf", &lon2) != 1 ) {
+	Err_Append("Expected float value for longitude of second point, got ");
+	Err_Append(lon2_s);
+	return 0;
+    }
+    if ( sscanf(lat2_s, "%lf", &lat2) != 1 ) {
+	Err_Append("Expected float value for latitude of second point, got ");
+	Err_Append(lat1_s);
+	return 0;
+    }
+    if ( sscanf(dist_s, "%lf", &dist) != 1 ) {
+	Err_Append("Expected float value for distance between points, got ");
+	Err_Append(dist_s);
+	return 0;
+    }
+    lon1 *= RAD_DEG;
+    lat1 *= RAD_DEG;
+    lon2 *= RAD_DEG;
+    lat2 *= RAD_DEG;
+    a0 = dist / GeogDist(lon1, lat1, lon2, lat2);
+    azg = GeogAz(lon1, lat1, lon2, lat2);
+    while (scanf(" %lf %lf %lf", &lon, &lat, &z) == 3) {
+	lat *= RAD_DEG;
+	lon *= RAD_DEG;
+	d = a0 * GeogDist(lon1, lat1, lon, lat);
+	az = GeogAz(lon1, lat1, lon, lat) - azg;
+	x = d * cos(az);
+	printf("%.1lf %.1lf\n", x, z);
     }
     return 1;
 }
