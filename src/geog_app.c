@@ -29,7 +29,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.45 $ $Date: 2012/03/09 17:07:31 $
+   .	$Revision: 1.46 $ $Date: 2012/03/13 22:39:40 $
  */
 
 #include <stdlib.h>
@@ -516,42 +516,39 @@ int vproj_cb(int argc, char *argv[])
 				   an input point */
     double x, y, z;
 
-    if ( argc == 5 ) {
-	rlat_s = argv[2];
-	rlon_s = argv[3];
-	azg_s = argv[4];
-	a0 = GeogREarth(NULL);
-    } else if ( argc == 6 ) {
+    if ( argc == 6 ) {
 	rlat_s = argv[2];
 	rlon_s = argv[3];
 	azg_s = argv[4];
 	a0_s = argv[5];
-	if ( sscanf(a0_s, "%lf", &a0) != 1 ) {
-	    Err_Append("Expected float value for earth radius, got ");
-	    Err_Append(a0_s);
-	    return 0;
-	}
     } else {
 	Err_Append("Usage: ");
 	Err_Append(cmd);
 	Err_Append(" ");
 	Err_Append(cmd1);
-	Err_Append(" lat lon az [earth_radius]");
+	Err_Append(" lat lon az earth_radius");
 	return 0;
     }
     if ( sscanf(rlat_s, "%lf", &rlat) != 1 ) {
-	Err_Append("Expected float value for latitude of first point, got ");
+	Err_Append("Expected float value for latitude of reference point, "
+		"got ");
 	Err_Append(rlat_s);
 	return 0;
     }
     if ( sscanf(rlon_s, "%lf", &rlon) != 1 ) {
-	Err_Append("Expected float value for longitude of first point, got ");
+	Err_Append("Expected float value for longitude of reference point, "
+		"got ");
 	Err_Append(rlon_s);
 	return 0;
     }
     if ( sscanf(azg_s, "%lf", &azg) != 1 ) {
 	Err_Append("Expected float value for azimuth, got ");
 	Err_Append(azg_s);
+	return 0;
+    }
+    if ( sscanf(a0_s, "%lf", &a0) != 1 ) {
+	Err_Append("Expected float value for earth radius, got ");
+	Err_Append(a0_s);
 	return 0;
     }
     rlat *= RAD_DEG;

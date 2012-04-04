@@ -25,7 +25,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.19 $ $Date: 2012/03/09 17:07:31 $
+.\" $Revision: 1.20 $ $Date: 2012/03/13 22:39:40 $
 .\"
 .TH geog 1 "geography application"
 .SH NAME
@@ -92,7 +92,7 @@ Then it reads lines from standard input. If a line starts with a pair of
 float values specifying the longitude and latitude of a point in the
 polygon, the input line is printed to standard output.
 .TP
-\fBgeog\fP \fBvproj\fP \fIrlat\fP \fIrlon\fP \fIaz\fP [\fIearth_radius\fP]
+\fBgeog\fP \fBvproj\fP \fIrlat\fP \fIrlon\fP \fIaz\fP \fIearth_radius\fP
 This subcommand projects points onto a vertical plane.
 The vertical plane rises above the great circle oriented at azimuth \fIaz\fP
 from the point with geographic coordinates \fIrlat\fP \fIrlon\fP.
@@ -111,8 +111,8 @@ x y z
 .fi
 where \fIx\fP gives the projection of the point along the plane, \fIy\fP gives
 the perpendicular distance from the plane to the point, and \fIz\fP simply
-repeats the vertical coordinate. If present, \fIearth_radius\fP gives radius
-of the Earth in some unit. Output coordinates will be in the same unit.
+repeats the vertical coordinate. \fIearth_radius\fP gives radius
+of the Earth in altitude units.
 
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
