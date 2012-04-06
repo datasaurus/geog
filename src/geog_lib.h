@@ -31,11 +31,13 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.23 $ $Date: 2011/02/25 22:12:10 $
+   .	$Revision: 1.24 $ $Date: 2011/10/07 22:41:06 $
  */
 
 #ifndef GEOG_LIB_H_
 #define GEOG_LIB_H_
+
+#define GEOG_VERSION "1.0"
 
 #include <stdlib.h>
 
