@@ -29,7 +29,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.46 $ $Date: 2012/03/13 22:39:40 $
+   .	$Revision: 1.47 $ $Date: 2012/04/04 20:17:48 $
  */
 
 #include <stdlib.h>
@@ -44,10 +44,11 @@
 char *cmd, *cmd1;
 
 /* Number of subcommands */
-#define NCMD 11
+#define NCMD 12
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
+callback version_cb;
 callback rearth_cb;
 callback lonr_cb;
 callback latn_cb;
@@ -66,10 +67,12 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"rearth", "lonr", "latn", "dist", "sum_dist", "az",
-	"step", "beam_ht", "contain_pt", "contain_pts", "vproj"};
-    callback *cb1v[NCMD] = {rearth_cb, lonr_cb, latn_cb, dist_cb, sum_dist_cb,
-	az_cb, step_cb, beam_ht_cb, contain_pt_cb, contain_pts_cb, vproj_cb};
+    char *cmd1v[NCMD] = {"-v", "rearth", "lonr", "latn", "dist",
+	"sum_dist", "az", "step", "beam_ht", "contain_pt", "contain_pts",
+	"vproj"};
+    callback *cb1v[NCMD] = {version_cb, rearth_cb, lonr_cb, latn_cb, dist_cb,
+	sum_dist_cb, az_cb, step_cb, beam_ht_cb, contain_pt_cb, contain_pts_cb,
+	vproj_cb};
 
     cmd = argv[0];
     if (argc < 2) {
@@ -102,6 +105,12 @@ int main(int argc, char *argv[])
 	rslt = 0;
     }
     return !rslt;
+}
+
+int version_cb(int argc, char *argv[])
+{
+    printf("%s %s\n", cmd, GEOG_VERSION);
+    return 1;
 }
 
 int rearth_cb(int argc, char *argv[])
@@ -560,7 +569,7 @@ int vproj_cb(int argc, char *argv[])
 	d = a0 * GeogDist(rlon, rlat, lon, lat);
 	az = GeogAz(rlon, rlat, lon, lat) - azg;
 	x = d * cos(az);
-	y = d * sin(az);
+	y = -d * sin(az);		/* Right handed Cartesian axes */
 	printf("%.1lf %.1lf %.1lf\n", x, y, z);
     }
     return 1;
