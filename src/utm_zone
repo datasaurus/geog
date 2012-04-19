@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# utm_zone --
+#	Compute Universal Transverse Mercator zone
+#
+# Usage:
+#	utm_zone lon
+# lon is longitude in degrees.
+#
+# geog command must be in current path
+
+if [ $# -ne 1 ]
+then
+    echo "Usage: $0 lon"
+    exit 1
+fi
+lon=$1
+lon=`geog lonr $lon 540`
+printf '%.0f\n' `echo \( $lon - 183 \) / 6 + 1  | bc -l`
