@@ -31,11 +31,16 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.33 $ $Date: 2011/10/07 22:40:35 $
+   .	$Revision: 1.34 $ $Date: 2011/10/10 20:06:57 $
  */
 
 #include <math.h>
 #include "geog_lib.h"
+
+#ifndef M_PI
+# define M_PI		3.14159265358979323846	/* pi */
+#endif
+
 
 /* Get or set Earth radius */
 double GeogREarth(const double *r)
