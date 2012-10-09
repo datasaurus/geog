@@ -29,7 +29,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.48 $ $Date: 2012/04/06 20:57:30 $
+   .	$Revision: 1.49 $ $Date: 2012/10/09 19:50:52 $
  */
 
 #include <stdlib.h>
@@ -38,12 +38,16 @@
 #include <math.h>
 #include "alloc.h"
 #include "geog_lib.h"
+#include "geog_proj.h"
 
 /* Application name and subcommand name */
-char *cmd, *cmd1;
+char *argv0, *argv1;
+
+/* Default array size */
+#define LEN 1024
 
 /* Number of subcommands */
-#define NCMD 12
+#define NCMD 14
 
 /* Callback functions.  There should be one for each subcommand. */
 typedef int (callback)(int , char **);
@@ -59,6 +63,8 @@ callback beam_ht_cb;
 callback contain_pt_cb;
 callback contain_pts_cb;
 callback vproj_cb;
+callback latlon_to_xy_cb;
+callback xy_to_latlon_cb;
 
 int main(int argc, char *argv[])
 {
@@ -66,27 +72,27 @@ int main(int argc, char *argv[])
     int rslt;		/* Return code */
 
     /* Arrays of subcommand names and associated callbacks */
-    char *cmd1v[NCMD] = {"-v", "rearth", "lonr", "latn", "dist",
+    char *argv1v[NCMD] = {"-v", "rearth", "lonr", "latn", "dist",
 	"sum_dist", "az", "step", "beam_ht", "contain_pt", "contain_pts",
-	"vproj"};
+	"vproj", "latlon_to_xy", "xy_to_latlon"};
     callback *cb1v[NCMD] = {version_cb, rearth_cb, lonr_cb, latn_cb, dist_cb,
 	sum_dist_cb, az_cb, step_cb, beam_ht_cb, contain_pt_cb, contain_pts_cb,
-	vproj_cb};
+	vproj_cb, latlon_to_xy_cb, xy_to_latlon_cb};
 
-    cmd = argv[0];
+    argv0 = argv[0];
     if (argc < 2) {
-	fprintf(stderr, "Usage: %s subcommand [subcommand_options ...]\n", cmd);
+	fprintf(stderr, "Usage: %s subcommand [subcommand_options ...]\n", argv0);
 	exit(1);
     }
-    cmd1 = argv[1];
+    argv1 = argv[1];
 
-    /* Search cmd1v for cmd1.  When match is found, evaluate the associated
+    /* Search argv1v for argv1.  When match is found, evaluate the associated
      * callback from cb1v. */
     for (i = 0; i < NCMD; i++) {
-	if (strcmp(cmd1v[i], cmd1) == 0) {
+	if (strcmp(argv1v[i], argv1) == 0) {
 	    rslt = (cb1v[i])(argc, argv);
 	    if ( !rslt ) {
-		fprintf(stderr, "%s %s failed.\n", cmd, cmd1);
+		fprintf(stderr, "%s %s failed.\n", argv0, argv1);
 		break;
 	    } else {
 		break;
@@ -94,10 +100,10 @@ int main(int argc, char *argv[])
 	}
     }
     if (i == NCMD) {
-	fprintf(stderr, "%s: No option or subcommand named %s\n", cmd, cmd1);
+	fprintf(stderr, "%s: No option or subcommand named %s\n", argv0, argv1);
 	fprintf(stderr, "Subcommand must be one of: ");
 	for (i = 0; i < NCMD; i++) {
-	    fprintf(stderr, "%s ", cmd1v[i]);
+	    fprintf(stderr, "%s ", argv1v[i]);
 	}
 	fprintf(stderr, "\n");
 	rslt = 0;
@@ -107,7 +113,7 @@ int main(int argc, char *argv[])
 
 int version_cb(int argc, char *argv[])
 {
-    printf("%s %s\n", cmd, GEOG_VERSION);
+    printf("%s %s\n", argv0, GEOG_VERSION);
     return 1;
 }
 
@@ -116,7 +122,7 @@ int rearth_cb(int argc, char *argv[])
     if (argc == 2) {
 	printf("%f\n", GeogREarth(NULL));
     } else {
-	fprintf(stderr, "Usage: %s %s\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s\n", argv0, argv1);
 	return 0;
     }
     return 1;
@@ -128,7 +134,7 @@ int lonr_cb(int argc, char *argv[])
     double l, r;		/* Values from command line */
 
     if (argc != 4) {
-	fprintf(stderr, "Usage: %s %s lon reflon\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s lon reflon\n", argv0, argv1);
 	return 0;
     }
     l_s = argv[2];
@@ -152,7 +158,7 @@ int latn_cb(int argc, char *argv[])
     double l;			/* Latitude value from command line */
 
     if (argc != 3) {
-	fprintf(stderr, "Usage: %s %s lat\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s lat\n", argv0, argv1);
 	return 0;
     }
     l_s = argv[2];
@@ -170,7 +176,7 @@ int dist_cb(int argc, char *argv[])
     double lat1, lon1, lat2, lon2;
 
     if (argc != 6) {
-	fprintf(stderr, "Usage: %s %s lat1 lon1 lat2 lon2\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s lat1 lon1 lat2 lon2\n", argv0, argv1);
 	return 0;
     }
     lat1_s = argv[2];
@@ -211,7 +217,7 @@ int sum_dist_cb(int argc, char *argv[])
     double tot;				/* Total distance */
 
     if (argc != 2) {
-	fprintf(stderr, "Usage: %s %s\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s\n", argv0, argv1);
 	return 0;
     }
     if (scanf(" %lf %lf", &lat0, &lon0) != 2) {
@@ -234,7 +240,7 @@ int az_cb(int argc, char *argv[])
     double lat1, lon1, lat2, lon2;
 
     if (argc != 6) {
-	fprintf(stderr, "Usage: %s %s lat1 lon1 lat2 lon2\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s lat1 lon1 lat2 lon2\n", argv0, argv1);
 	return 0;
     }
     lat1_s = argv[2];
@@ -304,7 +310,7 @@ int step_cb(int argc, char *argv[])
 	printf("%f %f\n", lat2 * DEG_RAD, lon2 * DEG_RAD);
     } else {
 	fprintf(stderr, "Usage: %s %s [lat lon direction distance]\n",
-		cmd, cmd1);
+		argv0, argv1);
 	return 0;
     }
     return 1;
@@ -316,7 +322,7 @@ int beam_ht_cb(int argc, char *argv[])
     double d, tilt, a0;
 
     if (argc != 5) {
-	fprintf(stderr, "Usage: %s %s distance tilt earth_radius\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s distance tilt earth_radius\n", argv0, argv1);
 	return 0;
     }
     dist_s = argv[2];
@@ -348,7 +354,7 @@ int contain_pt_cb(int argc, char *argv[])
 
     if ( argc < 10 || argc % 2 != 0 ) {
 	fprintf(stderr, "Usage: %s %s lat lon lat1 lon1 lat2 lon2 ...\n",
-		cmd, cmd1);
+		argv0, argv1);
 	return 0;
     }
     lat_s = argv[2];
@@ -387,7 +393,6 @@ int contain_pt_cb(int argc, char *argv[])
     return 1;
 }
 
-#define LEN 1024
 int contain_pts_cb(int argc, char *argv[])
 {
     char **lat_sp, **lon_sp;
@@ -396,7 +401,7 @@ int contain_pts_cb(int argc, char *argv[])
     char buf[LEN];
 
     if ( argc < 8 || argc % 2 != 0 ) {
-	fprintf(stderr, "Usage: %s %s lat1 lon1 lat2 lon2 ...\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s lat1 lon1 lat2 lon2 ...\n", argv0, argv1);
 	return 0;
     }
     n_pts = (argc - 2) / 2;
@@ -449,7 +454,7 @@ int vproj_cb(int argc, char *argv[])
 	azg_s = argv[4];
 	a0_s = argv[5];
     } else {
-	fprintf(stderr, "Usage: %s %s lat lon earth_radius\n", cmd, cmd1);
+	fprintf(stderr, "Usage: %s %s lat lon earth_radius\n", argv0, argv1);
 	return 0;
     }
     if ( sscanf(rlat_s, "%lf", &rlat) != 1 ) {
@@ -482,6 +487,102 @@ int vproj_cb(int argc, char *argv[])
 	x = d * cos(az);
 	y = -d * sin(az);		/* Right handed Cartesian axes */
 	printf("%.1lf %.1lf %.1lf\n", x, y, z);
+    }
+    return 1;
+}
+
+/*
+   Read projection specifier on command line. Read latitude longitude pairs
+   from standard input. Write corresponding x y values to standard output.
+ */
+
+int latlon_to_xy_cb(int argc, char *argv[])
+{
+    char **arg;				/* Argument from command line */
+    size_t len;				/* Length of command line */
+    char *ln;				/* Projection specifier string */
+    struct GeogProj proj;		/* Projection */
+    double lat, lon;			/* Input geographic coordinates */
+    double x, y;			/* Output map coordinates */
+
+    if ( argc < 3 ) {
+	fprintf(stderr, "Usage: %s %s projection [args ...]\n", argv0, argv1);
+	return 0;
+    }
+    for (arg = argv + 2, len = 0; *arg; arg++) {
+	len += strlen(*arg) + 1;
+    }
+    if ( !(ln = CALLOC(len + 1, 1)) ) {
+	fprintf(stderr, "%s %s: failed to allocate internal projection "
+		"specifier.\n", argv0, argv1);
+	return 0;
+    }
+    for (arg = argv + 2; *arg; arg++) {
+	strcat(ln, *arg);
+	strcat(ln, " ");
+    }
+    if ( !GeogProjSetFmStr(ln, &proj) ) {
+	fprintf(stderr, "%s %s: failed to set projection %s\n",
+		argv0, argv1, ln);
+	return 0;
+    }
+    FREE(ln);
+    while ( scanf(" %lf %lf", &lat, &lon) == 2 ) {
+	lon *= RAD_DEG;
+	lat *= RAD_DEG;
+	if ( GeogProjLonLatToXY(lon, lat, &x, &y, &proj) ) {
+	    printf("%lf %lf ", x, y);
+	} else {
+	    printf("**** **** ");
+	}
+	printf("\n");
+    }
+    return 1;
+}
+
+/*
+   Read projection specifier on command line. Read latitude longitude pairs
+   from standard input. Write corresponding x y values to standard output.
+ */
+
+int xy_to_latlon_cb(int argc, char *argv[])
+{
+    char **arg;				/* Argument from command line */
+    size_t len;				/* Length of command line */
+    char *ln;				/* Projection specifier string */
+    struct GeogProj proj;		/* Projection */
+    double x, y;			/* Input map coordinates */
+    double lat, lon;			/* Output geographic coordinates */
+
+    if ( argc < 3 ) {
+	fprintf(stderr, "Usage: %s %s projection [args ...]\n", argv0, argv1);
+	return 0;
+    }
+    for (arg = argv + 2, len = 0; *arg; arg++) {
+	len += strlen(*arg) + 1;
+    }
+    if ( !(ln = CALLOC(len + 1, 1)) ) {
+	fprintf(stderr, "%s %s: failed to allocate internal projection "
+		"specifier.\n", argv0, argv1);
+	return 0;
+    }
+    for (arg = argv + 2; *arg; arg++) {
+	strcat(ln, *arg);
+	strcat(ln, " ");
+    }
+    if ( !GeogProjSetFmStr(ln, &proj) ) {
+	fprintf(stderr, "%s %s: failed to set projection %s\n",
+		argv0, argv1, ln);
+	return 0;
+    }
+    FREE(ln);
+    while ( scanf(" %lf %lf", &x, &y) == 2 ) {
+	if ( GeogProjXYToLonLat(x, y, &lon, &lat, &proj) ) {
+	    printf("%lf %lf ", lat * DEG_RAD, lon * DEG_RAD);
+	} else {
+	    printf("**** **** ");
+	}
+	printf("\n");
     }
     return 1;
 }
