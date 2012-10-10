@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: $ $Date: $
+   .	$Revision: 1.1 $ $Date: 2012/10/09 19:30:00 $
  */
 
 /*
@@ -49,7 +49,155 @@
 #include "geog_lib.h"
 #include "geog_proj.h"
 
-static struct GeogProj refPtProj(double, double);
+static struct GeogProj setRefPtProj(double, double);
+
+int GeogProjLonLatToXY(double lon, double lat, double *x_p, double *y_p,
+	struct GeogProj *projPtr)
+{
+    switch (projPtr->type) {
+	case CylEqDist:
+	    {
+		double r0 = GeogREarth(NULL);
+		double refLon = projPtr->params.RefPt.refLon;
+		double cosRLat = projPtr->params.RefPt.cosRLat;
+
+		lon = GeogLonR(lon, refLon);
+		*x_p = lon * cosRLat * r0;
+		*y_p = lat * r0;
+	    }
+	    break;
+	case CylEqArea:
+	    {
+		double r0 = GeogREarth(NULL);
+		double refLon = projPtr->params.RefLon;
+
+		lon = GeogLonR(lon, refLon);
+		*x_p = r0 * lon;
+		*y_p = r0 * sin(lat);
+	    }
+	    break;
+	case Mercator:
+	    {
+		double r0 = GeogREarth(NULL);
+		double refLon = projPtr->params.RefLon;
+		double limit;
+
+		limit = M_PI_2 * 8.0 / 9.0;	/* 80 degrees */
+		if ( fabs(lat) > limit ) {
+		    return 0;
+		}
+		lon = GeogLonR(lon, refLon);
+		*x_p = r0 * lon;
+		*y_p = r0 * log(tan(M_PI_4 + 0.5 * lat));
+
+	    }
+	    break;
+	case LambertConfConic:
+	    {
+		double refLon = projPtr->params.LambertConfConic.refLon;
+		double refLat = projPtr->params.LambertConfConic.refLat;
+		double RF = projPtr->params.LambertConfConic.RF;
+		double n = projPtr->params.LambertConfConic.n;
+		double rho0 = projPtr->params.LambertConfConic.rho0;
+		double rho, theta;
+
+		lon = GeogLonR(lon, refLon);
+		if (lat == M_PI_2 ) {
+		    if ( refLat < 0.0 ) {
+			return 0;
+		    }
+		    rho = 0.0;
+		} else if ( lat == -M_PI_2 ) {
+		    if ( refLat > 0.0 ) {
+			return 0;
+		    }
+		    rho = 0.0;
+		} else {
+		    rho = RF / pow(tan(M_PI_4 + 0.5 * lat), n);
+		}
+		theta = n * (lon - refLon);
+		*x_p = rho * sin(theta);
+		*y_p = rho0 - rho * cos(theta);
+	    }
+	    break;
+	case LambertEqArea:
+	    {
+		double r0 = GeogREarth(NULL);
+		double refLon = projPtr->params.RefPt.refLon;
+		double refLat = projPtr->params.RefPt.refLat;
+		double cosRLat = projPtr->params.RefPt.cosRLat;
+		double sinRLat = projPtr->params.RefPt.sinRLat;
+		double k, dlon;
+		double cosLat, sinLat, cosDLon;
+
+		cosLat = cos(lat);
+		sinLat = sin(lat);
+		dlon = lon - refLon;
+		cosDLon = cos(dlon);
+		if ( GeogDist(refLon, refLat, lon, lat) > M_PI_2 ) {
+		    return 0;
+		}
+		k = 1.0 + sinRLat * sinLat + cosRLat * cosLat * cosDLon;
+		k = sqrt(2.0 / k);
+		*x_p = r0 * k * cosLat * sin(dlon);
+		*y_p = r0 * k * (cosRLat * sinLat - sinRLat * cosLat * cosDLon);
+	    }
+	    break;
+	case Orthographic:
+	    {
+		double r0 = GeogREarth(NULL);
+		double refLon = projPtr->params.RefPt.refLon;
+		double refLat = projPtr->params.RefPt.refLat;
+		double cosRLat = projPtr->params.RefPt.cosRLat;
+		double sinRLat = projPtr->params.RefPt.sinRLat;
+		double coslat, dlon;
+
+		if ( GeogDist(refLon, refLat, lon, lat) > M_PI_2 ) {
+		    return 0;
+		}
+		coslat = cos(lat);
+		dlon = lon - refLon;
+		*x_p = r0 * coslat * sin(dlon);
+		*y_p = r0 * (cosRLat * sin(lat) - sinRLat * coslat * cos(dlon));
+	    }
+	    break;
+	case Stereographic:
+	    {
+		double r0 = GeogREarth(NULL);
+		double refLon = projPtr->params.RefPt.refLon;
+		double refLat = projPtr->params.RefPt.refLat;
+		double cosRLat = projPtr->params.RefPt.cosRLat;
+		double sinRLat = projPtr->params.RefPt.sinRLat;
+		double dlon, cosDLon, k, cosLat, sinLat;
+
+		/*
+		   Go to 90 degrees from reference point (i.e. follow convention
+		   and treat as hemisphere projection)
+		 */
+
+		if ( GeogDist(refLon, refLat, lon, lat) > M_PI_2 ) {
+		    return 0;
+		}
+		cosLat = cos(lat);
+		sinLat = sin(lat);
+		dlon = lon - refLon;
+		cosDLon = cos(dlon);
+		k = 2.0 / (1.0 + sinRLat * sinLat + cosRLat * cosLat * cosDLon);
+		*x_p = r0 * k * cosLat * sin(dlon);
+		*y_p = r0 * k * (cosRLat * sinLat - sinRLat * cosLat * cosDLon);
+	    }
+	    break;
+    }
+    if (projPtr->rotation != 0) {
+	double x = *x_p, y = *y_p;
+	double x_;
+
+	x_ = x * projPtr->cosr + y * projPtr->sinr;
+	*y_p = y * projPtr->cosr - x * projPtr->sinr;
+	*x_p = x_;
+    }
+    return 1;
+}
 
 int GeogProjXYToLonLat(double x, double y, double *lon_p, double *lat_p,
 	struct GeogProj *projPtr)
@@ -213,154 +361,6 @@ int GeogProjXYToLonLat(double x, double y, double *lon_p, double *lat_p,
     return 1;
 }
 
-int GeogProjLonLatToXY(double lon, double lat, double *x_p, double *y_p,
-	struct GeogProj *projPtr)
-{
-    switch (projPtr->type) {
-	case CylEqDist:
-	    {
-		double r0 = GeogREarth(NULL);
-		double refLon = projPtr->params.RefPt.refLon;
-		double cosRLat = projPtr->params.RefPt.cosRLat;
-
-		lon = GeogLonR(lon, refLon);
-		*x_p = lon * cosRLat * r0;
-		*y_p = lat * r0;
-	    }
-	    break;
-	case CylEqArea:
-	    {
-		double r0 = GeogREarth(NULL);
-		double refLon = projPtr->params.RefLon;
-
-		lon = GeogLonR(lon, refLon);
-		*x_p = r0 * lon;
-		*y_p = r0 * sin(lat);
-	    }
-	    break;
-	case Mercator:
-	    {
-		double r0 = GeogREarth(NULL);
-		double refLon = projPtr->params.RefLon;
-		double limit;
-
-		limit = M_PI_2 * 8.0 / 9.0;	/* 80 degrees */
-		if ( fabs(lat) > limit ) {
-		    return 0;
-		}
-		lon = GeogLonR(lon, refLon);
-		*x_p = r0 * lon;
-		*y_p = r0 * log(tan(M_PI_4 + 0.5 * lat));
-
-	    }
-	    break;
-	case LambertConfConic:
-	    {
-		double refLon = projPtr->params.LambertConfConic.refLon;
-		double refLat = projPtr->params.LambertConfConic.refLat;
-		double RF = projPtr->params.LambertConfConic.RF;
-		double n = projPtr->params.LambertConfConic.n;
-		double rho0 = projPtr->params.LambertConfConic.rho0;
-		double rho, theta;
-
-		lon = GeogLonR(lon, refLon);
-		if (lat == M_PI_2 ) {
-		    if ( refLat < 0.0 ) {
-			return 0;
-		    }
-		    rho = 0.0;
-		} else if ( lat == -M_PI_2 ) {
-		    if ( refLat > 0.0 ) {
-			return 0;
-		    }
-		    rho = 0.0;
-		} else {
-		    rho = RF / pow(tan(M_PI_4 + 0.5 * lat), n);
-		}
-		theta = n * (lon - refLon);
-		*x_p = rho * sin(theta);
-		*y_p = rho0 - rho * cos(theta);
-	    }
-	    break;
-	case LambertEqArea:
-	    {
-		double r0 = GeogREarth(NULL);
-		double refLon = projPtr->params.RefPt.refLon;
-		double refLat = projPtr->params.RefPt.refLat;
-		double cosRLat = projPtr->params.RefPt.cosRLat;
-		double sinRLat = projPtr->params.RefPt.sinRLat;
-		double k, dlon;
-		double cosLat, sinLat, cosDLon;
-
-		cosLat = cos(lat);
-		sinLat = sin(lat);
-		dlon = lon - refLon;
-		cosDLon = cos(dlon);
-		if ( GeogDist(refLon, refLat, lon, lat) > M_PI_2 ) {
-		    return 0;
-		}
-		k = 1.0 + sinRLat * sinLat + cosRLat * cosLat * cosDLon;
-		k = sqrt(2.0 / k);
-		*x_p = r0 * k * cosLat * sin(dlon);
-		*y_p = r0 * k * (cosRLat * sinLat - sinRLat * cosLat * cosDLon);
-	    }
-	    break;
-	case Orthographic:
-	    {
-		double r0 = GeogREarth(NULL);
-		double refLon = projPtr->params.RefPt.refLon;
-		double refLat = projPtr->params.RefPt.refLat;
-		double cosRLat = projPtr->params.RefPt.cosRLat;
-		double sinRLat = projPtr->params.RefPt.sinRLat;
-		double coslat, dlon;
-
-		if ( GeogDist(refLon, refLat, lon, lat) > M_PI_2 ) {
-		    return 0;
-		}
-		coslat = cos(lat);
-		dlon = lon - refLon;
-		*x_p = r0 * coslat * sin(dlon);
-		*y_p = r0 * (cosRLat * sin(lat) - sinRLat * coslat * cos(dlon));
-	    }
-	    break;
-	case Stereographic:
-	    {
-		double r0 = GeogREarth(NULL);
-		double refLon = projPtr->params.RefPt.refLon;
-		double refLat = projPtr->params.RefPt.refLat;
-		double cosRLat = projPtr->params.RefPt.cosRLat;
-		double sinRLat = projPtr->params.RefPt.sinRLat;
-		double dlon, cosDLon, k, cosLat, sinLat;
-
-		/*
-		   Go to 90 degrees from reference point (i.e. follow convention
-		   and treat as hemisphere projection)
-		 */
-
-		if ( GeogDist(refLon, refLat, lon, lat) > M_PI_2 ) {
-		    return 0;
-		}
-		cosLat = cos(lat);
-		sinLat = sin(lat);
-		dlon = lon - refLon;
-		cosDLon = cos(dlon);
-		k = 2.0 / (1.0 + sinRLat * sinLat + cosRLat * cosLat * cosDLon);
-		*x_p = r0 * k * cosLat * sin(dlon);
-		*y_p = r0 * k * (cosRLat * sinLat - sinRLat * cosLat * cosDLon);
-	    }
-	    break;
-    }
-    if (projPtr->rotation != 0) {
-	double x = *x_p, y = *y_p;
-	double x_;
-
-	x_ = x * projPtr->cosr + y * projPtr->sinr;
-	*y_p = y * projPtr->cosr - x * projPtr->sinr;
-	*x_p = x_;
-    }
-    return 1;
-}
-
 void GeogProjSetRotation(struct GeogProj *projPtr, double angle)
 {
     projPtr->rotation = angle;
@@ -487,7 +487,7 @@ struct GeogProj GeogProjSetOrthographic(double refLon, double refLat)
    Set members for a reference point based projection.
  */
 
-static struct GeogProj refPtProj(double refLon, double refLat)
+static struct GeogProj setRefPtProj(double refLon, double refLat)
 {
     struct GeogProj proj;
 
