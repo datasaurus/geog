@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.34 $ $Date: 2011/10/10 20:06:57 $
+   .	$Revision: 1.35 $ $Date: 2012/09/13 19:38:17 $
  */
 
 #include <math.h>
@@ -59,6 +59,12 @@ double GeogLonR(const double l, const double r)
     l1 = (l1 < r - M_PI) ? l1 + 2.0 * M_PI
 	: (l1 >= r + M_PI) ? l1 - 2.0 * M_PI : l1;
     return (l1 == -0.0) ? 0.0 : l1;
+}
+
+/* Return l1 - l0 in [l0 - M_PI, l0 + M_PI) */
+double GeogLonDiff(const double l1, const double l0)
+{
+    return GeogLonR(l1, l0) - l0;
 }
 
 /* Go l radians north of equator */

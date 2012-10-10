@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.24 $ $Date: 2011/10/07 22:41:06 $
+   .	$Revision: 1.25 $ $Date: 2012/04/06 20:58:21 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -65,6 +65,7 @@ struct GeogPt {
 
 double GeogREarth(const double *);
 double GeogLonR(const double, const double);
+double GeogLonDiff(const double, const double);
 double GeogLatN(const double);
 double GeogDist(const double, const double, const double, const double);
 double GeogAz(const double, const double, const double, const double);

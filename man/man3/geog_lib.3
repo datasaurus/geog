@@ -25,7 +25,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.19 $ $Date: 2011/02/25 22:13:24 $
+.\" $Revision: 1.20 $ $Date: 2011/10/07 22:42:41 $
 .\"
 .TH geog_lib 3 "geography functions"
 .SH NAME
@@ -35,6 +35,7 @@ GeogLonR, GeogLatN, GeogDist \- geography functions
 \fB#include "geog_lib.h"\fP
 \fBdouble GeogREarth(const double\fP *\fIr)\fP\fB;\fP
 \fBdouble GeogLonR(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
+\fBdouble GeogLonDiff(const double\fP \fIl\fP, \fBconst double\fP \fIr\fP\fB);\fP
 \fBdouble GeogLatN(const double\fP \fIl\fP\fB);\fP
 \fBdouble GeogDist(const double\fP \fIlon1\fP, \fBconst double\fP \fIlat1\fP,
 	\fBconst double\fP \fIlon2\fP, \fBconst double\fP \fIlat2\fP\fB);\fP
@@ -59,6 +60,9 @@ Return value is current value of Earth radius.
 \fBGeogLonR\fP returns a longitude equivalent to \fIl\fP in a longitude domain
 centered about \fIr\fP.  The return value is \fIl\fP\ +\ i\ *\ \fB2 * pi\fP for
 some integer i, and is in the interval
+[\fIr\fP\ -\ \fBpi / 2\fP,\ \fIr\fP\ +\ \fBpi / 2\fP).
+
+\fBGeogLonDiff\fP returns \fIl\fP\ -\ \fIr\fP in 
 [\fIr\fP\ -\ \fBpi / 2\fP,\ \fIr\fP\ +\ \fBpi / 2\fP).
 
 \fBGeogLatN\fP returns the latitude reached by going \fIl\fP radians north of
