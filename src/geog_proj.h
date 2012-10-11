@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: $ $Date: $
+   .	$Revision: 1.1 $ $Date: 2012/10/09 19:30:00 $
  */
 
 /*
@@ -67,18 +67,20 @@ enum ProjType {
 struct GeogProj {
     enum ProjType type;			/* Projection type */
     union {
-	double RefLon;			/* Reference longitude */
+	double lon0;			/* Longitude of map origin */
 	struct {
-	    double refLon, refLat;	/* Reference point */
-	    double cosRLat;		/* Cosine of reference latitude */
-	    double sinRLat;		/* Sine of reference latitude */
+	    double lon0, lat0;		/* Longitude, latitude or map origin */
+	    double cos_lat0;		/* Cosine of lat0 */
+	    double sin_lat0;		/* Sine of lat0 */
 	} RefPt;
 	struct {
-	    double refLat;		/* Reference latitude */
-	    double refLon;		/* Longitude of vertical meridian */
-	    double n;			/* See Snyder, p. 105 */
-	    double RF;			/* See Snyder, p. 105 */
+	    double lon0;		/* Longitude of map origin, vertical
+					   meridian if rotation == 0.0 */
+	    double lat0;		/* Latitude of map origin */
+	    double lat1, lat2;		/* Standard parallels */
 	    double rho0;		/* See Snyder, p. 105 */
+	    double n;			/* See Snyder, p. 105 */
+	    double F;			/* See Snyder, p. 105 */
 	} LambertConfConic;
     } params;
     double rotation;			/* Rotation angle (clockwise degrees).
@@ -96,13 +98,14 @@ struct GeogProj {
 
 int GeogProjXYToLonLat(double, double, double *, double *, struct GeogProj *);
 int GeogProjLonLatToXY(double, double, double *, double *, struct GeogProj *);
-struct GeogProj GeogProjSetCylEqDist(double, double);
-struct GeogProj GeogProjSetCylEqArea(double);
-struct GeogProj GeogProjSetMercator(double);
-struct GeogProj GeogProjSetLambertConfConic(double, double);
-struct GeogProj GeogProjSetLambertEqArea(double, double);
-struct GeogProj GeogProjSetStereographic(double, double);
-struct GeogProj GeogProjSetOrthographic(double, double);
+int GeogProjSetCylEqDist(double, double, struct GeogProj *);
+int GeogProjSetCylEqArea(double, struct GeogProj *);
+int GeogProjSetMercator(double, struct GeogProj *);
+int GeogProjSetLambertConfConic(double, double, double, double,
+	struct GeogProj *);
+int GeogProjSetLambertEqArea(double, double, struct GeogProj *);
+int GeogProjSetStereographic(double, double, struct GeogProj *);
+int GeogProjSetOrthographic(double, double, struct GeogProj *);
 void GeogProjSetRotation(struct GeogProj *, double);
 int GeogProjSetFmStr(char *, struct GeogProj *);
 
