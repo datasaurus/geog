@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.25 $ $Date: 2012/04/06 20:58:21 $
+   .	$Revision: 1.26 $ $Date: 2012/10/10 19:49:00 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -46,6 +46,9 @@
 #endif
 #ifndef M_PI_2
 #define M_PI_2   1.570796326794896619231	/* pi / 2 */
+#endif
+#ifndef M_PI_4
+#define M_PI_4   0.78539816339744830961		/* pi / 4 */
 #endif
 #ifndef RAD_DEG
 #define RAD_DEG   0.01745329251994329576	/* radians / degree */
