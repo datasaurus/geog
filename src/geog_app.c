@@ -1,6 +1,7 @@
 /*
    -	geog_app.c --
-   -		This file defines an application that does geography calculations.
+   -		This file defines an application that does geography
+   -		calculations.
    -
    .	Copyright (c) 2011, Gordon D. Carrie. All rights reserved.
    .	
@@ -29,7 +30,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.49 $ $Date: 2012/10/09 19:50:52 $
+   .	$Revision: 1.51 $ $Date: 2012/11/08 21:04:19 $
  */
 
 #include <stdlib.h>
@@ -81,7 +82,8 @@ int main(int argc, char *argv[])
 
     argv0 = argv[0];
     if (argc < 2) {
-	fprintf(stderr, "Usage: %s subcommand [subcommand_options ...]\n", argv0);
+	fprintf(stderr, "Usage: %s subcommand [subcommand_options ...]\n",
+		argv0);
 	exit(1);
     }
     argv1 = argv[1];
@@ -322,7 +324,8 @@ int beam_ht_cb(int argc, char *argv[])
     double d, tilt, a0;
 
     if (argc != 5) {
-	fprintf(stderr, "Usage: %s %s distance tilt earth_radius\n", argv0, argv1);
+	fprintf(stderr, "Usage: %s %s distance tilt earth_radius\n",
+		argv0, argv1);
 	return 0;
     }
     dist_s = argv[2];

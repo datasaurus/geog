@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.35 $ $Date: 2012/09/13 19:38:17 $
+   .	$Revision: 1.36 $ $Date: 2012/10/10 19:49:00 $
  */
 
 #include <math.h>
@@ -72,11 +72,13 @@ double GeogLatN(const double l)
 {
     double l1 = fmod(l, 2.0 * M_PI);
     l1 += (l1 < 0.0) ? 2.0 * M_PI : 0.0;
-    return (l1 > 1.5 * M_PI) ? l1 - 2.0 * M_PI : (l1 > M_PI_2 ) ? M_PI - l1 : l1;
+    return (l1 > 1.5 * M_PI) ? l1 - 2.0 * M_PI
+	: (l1 > M_PI_2 ) ? M_PI - l1 : l1;
 }
 
 /* Great circle distance in radians between two points */
-double GeogDist(const double o1, const double a1, const double o2, const double a2)
+double GeogDist(const double o1, const double a1, const double o2,
+	const double a2)
 {
     double sin_do_2, sin_da_2, a;
 
@@ -93,7 +95,8 @@ double GeogDist(const double o1, const double a1, const double o2, const double 
 }
 
 /* GeogAz from (longitude, latitude): (o1, a1) to (o2, a2) */
-double GeogAz(const double o1, const double a1, const double o2, const double a2)
+double GeogAz(const double o1, const double a1, const double o2,
+	const double a2)
 {
     double sin_da, sin_sa, y, x;
 

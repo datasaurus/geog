@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.2 $ $Date: 2012/10/10 17:38:13 $
+   .	$Revision: 1.3 $ $Date: 2012/10/11 21:46:47 $
  */
 
 /*
@@ -168,8 +168,8 @@ int GeogProjLonLatToXY(double lon, double lat, double *x_p, double *y_p,
 		sin_lat = sin(lat);
 		dlon = GeogLonDiff(lon, lon0);
 		cos_dlon = cos(dlon);
-		k = 2.0
-		    / (1.0 + sin_lat0 * sin_lat + cos_lat0 * cos_lat * cos_dlon);
+		k = 2.0 / (1.0 + sin_lat0 * sin_lat
+			+ cos_lat0 * cos_lat * cos_dlon);
 		*x_p = r0 * k * cos_lat * sin(dlon);
 		*y_p = r0 * k
 		    * (cos_lat0 * sin_lat - sin_lat0 * cos_lat * cos_dlon);
