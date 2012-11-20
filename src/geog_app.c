@@ -507,6 +507,7 @@ int latlon_to_xy_cb(int argc, char *argv[])
     struct GeogProj proj;		/* Projection */
     double lat, lon;			/* Input geographic coordinates */
     double x, y;			/* Output map coordinates */
+    char *l, *a;			/* Point into ln, arg */
 
     if ( argc < 3 ) {
 	fprintf(stderr, "Usage: %s %s projection [args ...]\n", argv0, argv1);
@@ -520,9 +521,11 @@ int latlon_to_xy_cb(int argc, char *argv[])
 		"specifier.\n", argv0, argv1);
 	return 0;
     }
-    for (arg = argv + 2; *arg; arg++) {
-	strcat(ln, *arg);
-	strcat(ln, " ");
+    for (l = ln, arg = argv + 2; *arg; arg++) {
+	for (a = *arg; *a; a++, l++) {
+	    *l = *a;
+	}
+	*l++ = ' ';
     }
     if ( !GeogProjSetFmStr(ln, &proj) ) {
 	fprintf(stderr, "%s %s: failed to set projection %s\n",
@@ -556,6 +559,7 @@ int xy_to_latlon_cb(int argc, char *argv[])
     struct GeogProj proj;		/* Projection */
     double x, y;			/* Input map coordinates */
     double lat, lon;			/* Output geographic coordinates */
+    char *l, *a;			/* Point into ln, arg */
 
     if ( argc < 3 ) {
 	fprintf(stderr, "Usage: %s %s projection [args ...]\n", argv0, argv1);
@@ -569,9 +573,11 @@ int xy_to_latlon_cb(int argc, char *argv[])
 		"specifier.\n", argv0, argv1);
 	return 0;
     }
-    for (arg = argv + 2; *arg; arg++) {
-	strcat(ln, *arg);
-	strcat(ln, " ");
+    for (l = ln, arg = argv + 2; *arg; arg++) {
+	for (a = *arg; *a; a++, l++) {
+	    *l = *a;
+	}
+	*l++ = ' ';
     }
     if ( !GeogProjSetFmStr(ln, &proj) ) {
 	fprintf(stderr, "%s %s: failed to set projection %s\n",
