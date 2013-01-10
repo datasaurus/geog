@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.3 $ $Date: 2012/10/11 21:46:47 $
+   .	$Revision: 1.4 $ $Date: 2012/11/08 21:05:33 $
  */
 
 /*
@@ -59,10 +59,11 @@ int GeogProjLonLatToXY(double lon, double lat, double *x_p, double *y_p,
 	    {
 		double r0 = GeogREarth(NULL);
 		double lon0 = projPtr->params.RefPt.lon0;
+		double lat0 = projPtr->params.RefPt.lat0;
 		double cos_lat0 = projPtr->params.RefPt.cos_lat0;
 
 		*x_p = GeogLonDiff(lon, lon0) * cos_lat0 * r0;
-		*y_p = lat * r0;
+		*y_p = (lat - lat0) * r0;
 	    }
 	    break;
 	case CylEqArea:
