@@ -25,7 +25,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.20 $ $Date: 2012/03/13 22:39:40 $
+.\" $Revision: 1.21 $ $Date: 2012/04/04 20:17:48 $
 .\"
 .TH geog 1 "geography application"
 .SH NAME
@@ -59,19 +59,19 @@ Computes the great circle distance from the point with geographic coordinates
 \fIlat1\fP \fIlon1\fP to the point with coordinates \fIlat2\fP \fIlon2\fP.
 .TP
 \fBgeog\fP \fBsum_dist\fP
-Computes the distance for a track given as "longitude latitude" pairs read from
+Computes the distance for a track given as "latitude longitude" pairs read from
 standard input. Result is given in great circle degrees.
 .TP
 \fBgeog\fP \fBaz\fP \fIlat1\fP \fIlon1\fP \fIlat2\fP \fIlon2\fP
 Computes the azimuth from the point with geographic coordinates
 \fIlat1\fP \fIlon1\fP to the point with coordinates \fIlat2\fP \fIlon2\fP.
 .TP
-\fBgeog\fP \fBstep\fP \fIlat\fP [\fIlon\fP \fIdir\fP \fIdist\fP]
+\fBgeog\fP \fBstep\fP [\fIlat\fP \fIlon\fP \fIdir\fP \fIdist\fP]
 Computes the longitude and latitude of the point in direction \fIdir\fP and
 distance \fIdist\fP along a great circle from point with coordinates
 \fIlat\fP \fIlon\fP.
 
-If \fIlon\fP \fIlat\fP \fIdir\fP \fIdist\fP are not given on the command line,
+If \fIlat\fP \fIlon\fP \fIdir\fP \fIdist\fP are not given on the command line,
 values are read from standard input.  There will be one line of output for
 every four values read in.
 .TP
