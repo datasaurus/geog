@@ -1,0 +1,129 @@
+#!/usr/local/bin/calc -i -f
+
+/*
+ - geog --
+ -	A calc script with constants and functions for geography.
+ -
+   This file defines constants and functions that perform basic
+   geography calculations on the sphere
+
+   Copyright (c) 2008 Gordon D. Carrie
+   All rights reserved.
+
+   Please send feedback to dev0@trekix.net
+
+   $Revision: 1.2 $ $Date: 2009/09/25 21:33:13 $
+ */
+
+pi = 3.14159265358979323846;
+rad_per_deg = pi / 180.0;
+deg_per_rad = 180.0 / pi;
+nmi = 1852.0;
+rearth = nmi * 60 * 180 / pi;
+
+obj geopt {lat, lon};
+
+/* Compute distance along spherical Earth between two points */
+
+define distance(lat1_d, lon1_d, lat2_d, lon2_d, unit)
+{
+    local lat1_r, lon1_r, lat2_r, lon2_r, sin_dlon_2, sin_dlat_2, a, dist_r;
+    lat1_r = lat1_d * rad_per_deg;
+    lat2_r = lat2_d * rad_per_deg;
+    lon1_r = lon1_d * rad_per_deg;
+    lon2_r = lon2_d * rad_per_deg;
+    sin_dlon_2 = sin(0.5 * (lon2_r - lon1_r));
+    sin_dlat_2 = sin(0.5 * (lat2_r - lat1_r));
+    a = sqrt(sin_dlat_2 * sin_dlat_2
+	+ cos(lat1_r) * cos(lat2_r) * sin_dlon_2 * sin_dlon_2);
+    dist_r = a > 1.0 ? pi : 2.0 * asin(a);
+    switch (unit) {
+	case "rad":
+	    return dist_r;
+	case "deg":
+	    return dist_r * deg_per_rad;
+	case "m":
+	    return dist_r * rearth;
+	case "km":
+	    return dist_r * rearth * 0.001;
+    }
+}
+
+/* Compute azimuth from one point to another.  Return value is degrees. */
+
+define azimuth(lat1_d, lon1_d, lat2_d, lon2_d)
+{
+    local lat1_r, lon1_r, lat2_r, lon2_r;
+    local cosDLon, sinDLon, sinDLat, sinMLat;
+    local az;
+
+    lat1_r = lat1_d * rad_per_deg;
+    lon1_r = lon1_d * rad_per_deg;
+    lat2_r = lat2_d * rad_per_deg;
+    lon2_r = lon2_d * rad_per_deg;
+    cosDLon = cos(lon2_r - lon1_r);
+    sinDLon = sin(lon2_r - lon1_r);
+    sinDLat = sin(lat1_r - lat2_r);
+    sinMLat = sin(lat2_r + lat1_r);
+    az = atan2(cos(lat2_r) * sinDLon,
+		0.5 * (sinMLat - sinDLat - (sinMLat + sinDLat) * cosDLon));
+    return az * deg_per_rad;
+}
+
+/* Step azimuth and range from a point */
+
+define step(lat_d, lon_d, az_d, dist, unit)
+{
+    local dist_r, az_r;
+    local lat_r, lon_r;
+    local cos_dist, sin_dist, cos_dir, sin_dir;
+    local cos_lat, cos_lon, sin_lon, sin_lat;
+    local x, y, z, h_1, h_2, dh, pi_2;
+    local dest;
+    obj geopt dest;
+
+    switch (unit) {
+	case "m":
+	    dist_r = dist / rearth;
+	    break;
+	case "km":
+	    dist_r = 1000.0 * dist / rearth;
+	    break;
+	case "nmi":
+	    dist_r = dist * nmi / rearth;
+	    break;
+    }
+    cos_dist = cos(dist_r);
+    sin_dist = sin(dist_r);
+
+    az_r = az_d * rad_per_deg;
+    cos_dir = cos(az_r);
+    sin_dir = sin(az_r);
+
+    lat_r = lat_d * rad_per_deg;
+    lon_r = lon_d * rad_per_deg;
+    cos_lat = cos(lat_r);
+    cos_lon = cos(lon_r);
+    sin_lon = sin(lon_r);
+    sin_lat = sin(lat_r);
+    x = cos_dist * cos_lon * cos_lat - sin_dir * sin_dist * sin_lon 
+        - cos_lon * cos_dir * sin_dist * sin_lat;
+    y = sin_dir * cos_lon * sin_dist + cos_dist * cos_lat * sin_lon 
+        - cos_dir * sin_dist * sin_lon * sin_lat;
+    z = cos_lat * cos_dir * sin_dist + cos_dist * sin_lat;
+
+    /*
+     * Compute x^2  +  y^2
+     */
+
+    h_1 = cos_dist * cos_lat - cos_dir * sin_dist * sin_lat;
+    h_2 = (sin_dir) * (sin_dist);
+    dh = h_1 * h_1 + h_2 * h_2;
+
+    pi_2 = 0.5 * pi;
+    lat_r = (dh == 0.0) ? (z > 0 ? pi_2 : -pi_2) : atan(z / sqrt(dh));
+    lon_r = atan2(y, x);
+    dest.lat = lat_r * deg_per_rad;
+    dest.lon = lon_r * deg_per_rad;
+    return dest;
+}
