@@ -1,7 +1,7 @@
 /*
    -	geog_proj.c --
    -		This file defines functions that convert back and forth between
-   -		latitude longitude pairs and map points.  See the user
+   -		longitude latitude pairs and map points.  See the user
    -		documentation for more information.
    - 
    .	Copyright (c) 2012 Gordon D. Carrie.  All rights reserved.
@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.4 $ $Date: 2012/11/08 21:05:33 $
+   .	$Revision: 1.5 $ $Date: 2013/01/10 21:19:07 $
  */
 
 /*
@@ -361,20 +361,23 @@ int GeogProjSetFmStr(char *l, struct GeogProj *projPtr)
     double lon0, lat0, lat1, lat2;
 
     if ( sscanf(l, "CylEqDist %lf %lf", &lon0, &lat0) == 2 ) {
-	return GeogProjSetCylEqDist(lon0, lat0, projPtr);
+	return GeogProjSetCylEqDist(lon0 * RAD_DEG, lat0 * RAD_DEG, projPtr);
     } else if ( sscanf(l, "CylEqArea %lf", &lon0) == 1 ) {
-	return GeogProjSetCylEqArea(lon0, projPtr);
+	return GeogProjSetCylEqArea(lon0 * RAD_DEG, projPtr);
     } else if ( sscanf(l, "Mercator %lf", &lon0) == 1 ) {
-	return GeogProjSetMercator(lon0, projPtr);
+	return GeogProjSetMercator(lon0 * RAD_DEG, projPtr);
     } else if ( sscanf(l, "LambertConfConic %lf %lf %lf %lf",
 		&lon0, &lat0, &lat1, &lat2) == 4 ) {
-	return GeogProjSetLambertConfConic(lon0, lat0, lat1, lat2, projPtr);
+	return GeogProjSetLambertConfConic(lon0 * RAD_DEG, lat0 * RAD_DEG,
+		lat1 * RAD_DEG, lat2 * RAD_DEG, projPtr);
     } else if ( sscanf(l, "LambertEqArea %lf %lf", &lon0, &lat0) == 2 ) {
-	return GeogProjSetLambertEqArea(lon0, lat0, projPtr);
+	return GeogProjSetLambertEqArea(lon0 * RAD_DEG, lat0 * RAD_DEG,
+		projPtr);
     } else if ( sscanf(l, "Stereographic %lf %lf", &lon0, &lat0) == 2 ) {
-	return GeogProjSetStereographic(lon0, lat0, projPtr);
+	return GeogProjSetStereographic(lon0 * RAD_DEG, lat0 * RAD_DEG,
+		projPtr);
     } else if ( sscanf(l, "Orthographic %lf %lf", &lon0, &lat0) == 2 ) {
-	return GeogProjSetOrthographic(lon0, lat0, projPtr);
+	return GeogProjSetOrthographic(lon0 * RAD_DEG, lat0 * RAD_DEG, projPtr);
     }
     return 0;
 }
