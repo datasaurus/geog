@@ -31,7 +31,16 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.36 $ $Date: 2012/10/10 19:49:00 $
+   .	$Revision: 1.37 $ $Date: 2012/11/08 21:05:16 $
+   .
+   .	References
+   .	Smart, W. M., "Textbook on Spherical Astronomy",
+   .	Sixth edition revised by R. M. Green.
+   .	Cambridge University Press, Cambridge, 1977.
+   .
+   .	Sinnott, R. W., "Virtues of the Haversine",
+   .	Sky and Telescope, vol. 68, no. 2, 1984, p. 159
+   .	cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1
  */
 
 #include <math.h>
@@ -42,11 +51,36 @@
 #endif
 
 
+/* Convert decimal degrees to degrees-minutes-seconds */
+void GeogDMS(double ddeg, double *deg, double *min, double *sec)
+{
+    double m;			/* Minutes, including fraction */
+
+    m = modf(ddeg, deg) * 60.0;
+    if ( m == 60.0 ) {
+	*deg += 1.0;
+	m = 0.0;
+    }
+    if ( m == -60.0 ) {
+	*deg -= 1.0;
+	m = 0.0;
+    }
+    *sec = modf(m, min) * 60.0;
+    if ( *sec == 60.0 ) {
+	*min += 1.0;
+	*sec = 0.0;
+    }
+    if ( *sec == -60.0 ) {
+	*min -= 1.0;
+	*sec = 0.0;
+    }
+}
+
 /* Get or set Earth radius */
 double GeogREarth(const double *r)
 {
     static double rearth = 6366707.019;		/* 1' = 1852 m */
-    if (r) {
+    if ( r ) {
 	rearth = *r;
     }
     return rearth;
@@ -82,12 +116,6 @@ double GeogDist(const double o1, const double a1, const double o2,
 {
     double sin_do_2, sin_da_2, a;
 
-    /*
-       Reference -- R.W. Sinnott, "Virtues of the Haversine",
-       Sky and Telescope, vol. 68, no. 2, 1984, p. 159
-       cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1
-     */
-
     sin_do_2 = sin(0.5 * (o2 - o1));
     sin_da_2 = sin(0.5 * (a2 - a1));
     a = sqrt(sin_da_2 * sin_da_2 + cos(a1) * cos(a2) * sin_do_2 * sin_do_2);
@@ -114,12 +142,6 @@ void GeogStep(const double o1, const double a1, const double d, const double s,
 	double *o2, double *a2)
 {
     double sin_s, sin_d, cos_d, dlon, a, x, y;
-
-    /*
-       Reference -- Smart, W. M., "Textbook on Spherical Astronomy",
-       Sixth edition revised by R. M. Green.
-       Cambridge University Press, Cambridge, 1977.
-     */
 
     sin_s = sin(s);
     sin_d = sin(d);
@@ -195,7 +217,7 @@ int GeogContainPt(const struct GeogPt pt, const struct GeogPt *pts,
 	}
     }
 
-    if (mrdx % 2 == 1) {
+    if ( mrdx % 2 == 1 ) {
 	/*
 	   Odd number of meridian crossings => region contains a pole.
 	   Assume pole is that of hemisphere containing pts mean.
@@ -205,7 +227,7 @@ int GeogContainPt(const struct GeogPt pt, const struct GeogPt *pts,
 	for (p0 = pts, z = 0.0; p0 < pts + n_pts; p0++) {
 	    z += sin(p0->lat);
 	}
-	if (z > 0.0) {
+	if ( z > 0.0 ) {
 	    lnx = !lnx;
 	}
 

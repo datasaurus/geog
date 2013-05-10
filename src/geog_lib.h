@@ -1,5 +1,5 @@
 /*
-   -	geog.h --
+   -	geog_lib.h --
    -		Declarations of structures and functions
    -		that store and manipulate geographic data.
    -		See geog_lib (3).
@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.26 $ $Date: 2012/10/10 19:49:00 $
+   .	$Revision: 1.27 $ $Date: 2012/11/08 21:05:08 $
  */
 
 #ifndef GEOG_LIB_H_
@@ -66,6 +66,7 @@ struct GeogPt {
     double lat;			/* Latitude, radians */
 };
 
+void GeogDMS(double, double *, double  *, double *);
 double GeogREarth(const double *);
 double GeogLonR(const double, const double);
 double GeogLonDiff(const double, const double);
