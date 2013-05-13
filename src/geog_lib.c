@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.37 $ $Date: 2012/11/08 21:05:16 $
+   .	$Revision: 1.38 $ $Date: 2013/05/10 22:26:56 $
    .
    .	References
    .	Smart, W. M., "Textbook on Spherical Astronomy",
@@ -43,7 +43,9 @@
    .	cited in: http://www.census.gov/cgi-bin/geo/gisfaq?Q5.1
  */
 
+#include <float.h>
 #include <math.h>
+#include <stdio.h>
 #include "geog_lib.h"
 
 #ifndef M_PI
@@ -52,27 +54,36 @@
 
 
 /* Convert decimal degrees to degrees-minutes-seconds */
-void GeogDMS(double ddeg, double *deg, double *min, double *sec)
+void GeogDMS(double ddeg, double *deg, double *min, double *sec, char *fmt)
 {
     double m;			/* Minutes, including fraction */
+    char buf[LDBL_MAX_10_EXP];	/* Character representations of minutes or
+				   seconds, formatted with fmt */
+    double v;			/* Minutes or seconds, read from buf */
 
     m = modf(ddeg, deg) * 60.0;
-    if ( m == 60.0 ) {
-	*deg += 1.0;
-	m = 0.0;
-    }
-    if ( m == -60.0 ) {
-	*deg -= 1.0;
-	m = 0.0;
-    }
     *sec = modf(m, min) * 60.0;
-    if ( *sec == 60.0 ) {
-	*min += 1.0;
-	*sec = 0.0;
-    }
-    if ( *sec == -60.0 ) {
-	*min -= 1.0;
-	*sec = 0.0;
+    if ( fmt ) {
+	snprintf(buf, LDBL_MAX_10_EXP, fmt, *sec);
+	v = strtod(buf, NULL);
+	if ( v == 60.0 ) {
+	    *sec = 0.0;
+	    *min += 1.0;
+	}
+	if ( v == -60.0 ) {
+	    *sec = 0.0;
+	    *min -= 1.0;
+	}
+	snprintf(buf, LDBL_MAX_10_EXP, fmt, *min);
+	v = strtod(buf, NULL);
+	if ( v == 60.0 ) {
+	    *min = 0.0;
+	    *deg += 1.0;
+	}
+	if ( v == -60.0 ) {
+	    *min = 0.0;
+	    *deg -= 1.0;
+	}
     }
 }
 

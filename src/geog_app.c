@@ -30,7 +30,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.52 $ $Date: 2012/11/20 00:02:07 $
+   .	$Revision: 1.53 $ $Date: 2013/05/10 22:27:14 $
  */
 
 #include <stdlib.h>
@@ -123,10 +123,10 @@ int version_cb(int argc, char *argv[])
 
 int dms_cb(int argc, char *argv[])
 {
-    char *d_s;
-    double d;
-    double deg, min, sec;
-    char out[LEN];
+    double d;				/* Degrees */
+    char *d_s;				/* String representation of d */
+    double deg, min, sec;		/* d broken into degrees, minutes,
+					   seconds */
 
     if ( argc != 3 ) {
 	fprintf(stderr, "Usage: %s %s degrees\n", argv0, argv1);
@@ -137,27 +137,7 @@ int dms_cb(int argc, char *argv[])
 	fprintf(stderr, "Expected float value for degrees, got %s\n", d_s);
 	return 0;
     }
-    GeogDMS(d, &deg, &min, &sec);
-    if ( snprintf(out, LEN, "%.0lf %.0lf %lf", deg, min, sec) > LEN ) {
-	fprintf(stderr, "Could not format output.\n");
-	return 0;
-    }
-    if ( sscanf(out, "%lf %lf %lf", &deg, &min, &sec) != 3 ) {
-	fprintf(stderr, "Unable to represent output.\n");
-	return 0;
-    }
-    if ( sec == 60.0 ) {
-	sec = 0.0;
-	min += 1.0;
-    }
-    if ( sec == -60.0 ) {
-	sec = 0.0;
-	min -= 1.0;
-    }
-    if ( min == -60.0 ) {
-	min = 0.0;
-	deg -= 1.0;
-    }
+    GeogDMS(d, &deg, &min, &sec, "%f");
     printf("%.0lf %.0lf %lf\n", deg, min, sec);
     return 1;
 }
