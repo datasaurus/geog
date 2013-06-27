@@ -30,7 +30,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.53 $ $Date: 2013/05/10 22:27:14 $
+   .	$Revision: 1.54 $ $Date: 2013/05/13 22:54:16 $
  */
 
 #include <stdlib.h>
@@ -141,6 +141,7 @@ int dms_cb(int argc, char *argv[])
     printf("%.0lf %.0lf %lf\n", deg, min, sec);
     return 1;
 }
+
 int rearth_cb(int argc, char *argv[])
 {
     if (argc == 2) {
@@ -305,7 +306,7 @@ int step_cb(int argc, char *argv[])
 	    printf("%f %f\n", lon2 * DEG_RAD, lat2 * DEG_RAD);
 	}
     } else if (argc == 6) {
-	char *lat1_s, *lon1_s, *dirn_s, *dist_s;
+	char *lon1_s, *lat1_s, *dirn_s, *dist_s;
 
 	lon1_s = argv[2];
 	if (sscanf(lon1_s, "%lf", &lon1) != 1) {
@@ -331,9 +332,9 @@ int step_cb(int argc, char *argv[])
 	}
 	GeogStep(lon1 * RAD_DEG, lat1 * RAD_DEG,
 		dirn * RAD_DEG, dist * RAD_DEG, &lon2, &lat2);
-	printf("%f %f\n", lat2 * DEG_RAD, lon2 * DEG_RAD);
+	printf("%f %f\n", lon2 * DEG_RAD, lat2 * DEG_RAD);
     } else {
-	fprintf(stderr, "Usage: %s %s [lat lon direction distance]\n",
+	fprintf(stderr, "Usage: %s %s [lon lat direction distance]\n",
 		argv0, argv1);
 	return 0;
     }
@@ -378,7 +379,7 @@ int contain_pt_cb(int argc, char *argv[])
     size_t n_pts;
 
     if ( argc < 10 || argc % 2 != 0 ) {
-	fprintf(stderr, "Usage: %s %s lat lon lat1 lon1 lat2 lon2 ...\n",
+	fprintf(stderr, "Usage: %s %s lon lat lon1 lat1 lon2 lat2 ...\n",
 		argv0, argv1);
 	return 0;
     }
@@ -399,20 +400,20 @@ int contain_pt_cb(int argc, char *argv[])
 	fprintf(stderr, "Could not allocate memory for polygon\n");
 	return 0;
     }
-    for (lat_sp = argv + 4, lon_sp = argv + 5, pts_p = pts;
-	    lon_sp < argv + argc; lat_sp += 2, lon_sp += 2, pts_p++) {
-	if ( sscanf(*lat_sp, "%lf", &pts_p->lat) != 1 ) {
-	    fprintf(stderr, "Expected float value for latitude, got %s\n",
-		    *lat_sp);
-	    return 0;
-	}
-	pts_p->lat *= RAD_DEG;
+    for (lon_sp = argv + 4, lat_sp = argv + 5, pts_p = pts;
+	    lat_sp < argv + argc; lon_sp += 2, lat_sp += 2, pts_p++) {
 	if ( sscanf(*lon_sp, "%lf", &pts_p->lon) != 1 ) {
 	    fprintf(stderr, "Expected float value for longitude, got %s\n",
 		    *lon_sp);
 	    return 0;
 	}
 	pts_p->lon *= RAD_DEG;
+	if ( sscanf(*lat_sp, "%lf", &pts_p->lat) != 1 ) {
+	    fprintf(stderr, "Expected float value for latitude, got %s\n",
+		    *lat_sp);
+	    return 0;
+	}
+	pts_p->lat *= RAD_DEG;
     }
     printf("%s\n", GeogContainPt(pt, pts, n_pts) ? "in" : "out");
     return 1;
@@ -426,7 +427,7 @@ int contain_pts_cb(int argc, char *argv[])
     char buf[LEN];
 
     if ( argc < 8 || argc % 2 != 0 ) {
-	fprintf(stderr, "Usage: %s %s lat1 lon1 lat2 lon2 ...\n", argv0, argv1);
+	fprintf(stderr, "Usage: %s %s lon1 lat1 lon2 lat2 ...\n", argv0, argv1);
 	return 0;
     }
     n_pts = (argc - 2) / 2;
@@ -434,23 +435,23 @@ int contain_pts_cb(int argc, char *argv[])
 	fprintf(stderr, "Could not allocate memory for polygon.\n");
 	return 0;
     }
-    for (lat_sp = argv + 2, lon_sp = argv + 3, pts_p = pts;
-	    lat_sp < argv + argc; lat_sp += 2, lon_sp += 2, pts_p++) {
-	if ( sscanf(*lat_sp, "%lf", &pts_p->lat) != 1 ) {
-	    fprintf(stderr, "Expected float value for latitude, got %s\n",
-		    *lat_sp);
-	    return 0;
-	}
-	pts_p->lat *= RAD_DEG;
+    for (lon_sp = argv + 2, lat_sp = argv + 3, pts_p = pts;
+	    lat_sp < argv + argc; lon_sp += 2, lat_sp += 2, pts_p++) {
 	if ( sscanf(*lon_sp, "%lf", &pts_p->lon) != 1 ) {
 	    fprintf(stderr, "Expected float value for longitude, got %s\n",
 		    *lon_sp);
 	    return 0;
 	}
 	pts_p->lon *= RAD_DEG;
+	if ( sscanf(*lat_sp, "%lf", &pts_p->lat) != 1 ) {
+	    fprintf(stderr, "Expected float value for latitude, got %s\n",
+		    *lat_sp);
+	    return 0;
+	}
+	pts_p->lat *= RAD_DEG;
     }
     while ( fgets(buf, LEN, stdin) ) {
-	if ( sscanf(buf, " %lf %lf ", &pt.lat, &pt.lon) == 2 ) {
+	if ( sscanf(buf, " %lf %lf ", &pt.lon , &pt.lat) == 2 ) {
 	    pt.lon *= RAD_DEG;
 	    pt.lat *= RAD_DEG;
 	    if ( GeogContainPt(pt, pts, n_pts) ) {
@@ -463,10 +464,10 @@ int contain_pts_cb(int argc, char *argv[])
 
 int vproj_cb(int argc, char *argv[])
 {
-    char *rlat_s, *rlon_s, *azg_s, *a0_s;
-    double rlat, rlon;
-    double azg;			/* Azimuth of proj plane from (rlat rlon) */
-    double lat, lon;
+    char *rlon_s, *rlat_s, *azg_s, *a0_s;
+    double rlon, rlat;
+    double azg;			/* Azimuth of proj plane from (rlon rlat) */
+    double lon, lat;
     double az;
     double a0;			/* Earth radius */
     double d;			/* Distance along ground from (rlat rlon) to
