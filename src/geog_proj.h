@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.1 $ $Date: 2012/10/09 19:30:00 $
+   .	$Revision: 1.2 $ $Date: 2012/10/11 21:46:47 $
  */
 
 /*
@@ -46,8 +46,6 @@
 
 #ifndef _GEOGPROJ_H_
 #define _GEOGPROJ_H_
-
-#include "geog_lib.h"
 
 /*
    The following constant identifies the currently recognized projection types.
