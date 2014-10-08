@@ -25,7 +25,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.22 $ $Date: 2013/03/18 17:53:44 $
+.\" $Revision: 1.23 $ $Date: 2013/05/10 22:32:22 $
 .\"
 .TH geog 1 "geography application"
 .SH NAME
@@ -120,14 +120,14 @@ of the Earth in altitude units.
 \fBgeog\fP \fBlonlat_to_xy\fP \fIprojection\fP [\fIlon\fP \fIlat\fP ...]
 transforms longitudes and latitudes to map coordinates using
 \fIprojection\fP, which must be a character string intelligible to
-\fBGeogProjSetFmStr\fP. See \fBGeogProjSetFmStr\fP (3). The longitudes
+\fBGeogProjSetFmStr\fP. See \fBgeog_proj\fP (3). The longitudes
 and latitudesare either given on the command line or read from
 standard input.
 .TP
 \fBgeog\fP \fBxy_to_lonlat\fP \fIprojection\fP [\fIx\fP \fIy\fP ...]
 transforms map coordinates to longitudes and latitudes using
 \fIprojection\fP, which must be a character string intelligible to
-\fBGeogProjSetFmStr\fP. See \fBGeogProjSetFmStr\fP (3). The map coordinates
+\fBGeogProjSetFmStr\fP. See \fBgeog_proj\fP (3). The map coordinates
 are either given on the command line or read from standard input.
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
