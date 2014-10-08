@@ -30,7 +30,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.54 $ $Date: 2013/05/13 22:54:16 $
+   .	$Revision: 1.55 $ $Date: 2013/06/27 21:56:04 $
  */
 
 #include <stdlib.h>
@@ -533,7 +533,7 @@ int lonlat_to_xy_cb(int argc, char *argv[])
     char *l, *a;			/* Point into ln, arg */
 
     if ( argc < 3 ) {
-	fprintf(stderr, "Usage: %s %s projection [args ...]\n", argv0, argv1);
+	fprintf(stderr, "Usage: %s %s projection\n", argv0, argv1);
 	return 0;
     }
     for (arg = argv + 2, len = 0; *arg; arg++) {
@@ -585,7 +585,7 @@ int xy_to_lonlat_cb(int argc, char *argv[])
     char *l, *a;			/* Point into ln, arg */
 
     if ( argc < 3 ) {
-	fprintf(stderr, "Usage: %s %s projection [args ...]\n", argv0, argv1);
+	fprintf(stderr, "Usage: %s %s projection\n", argv0, argv1);
 	return 0;
     }
     for (arg = argv + 2, len = 0; *arg; arg++) {

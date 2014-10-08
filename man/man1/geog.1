@@ -25,7 +25,7 @@
 .\" 
 .\" Please address questions and feedback to dev0@trekix.net
 .\" 
-.\" $Revision: 1.23 $ $Date: 2013/05/10 22:32:22 $
+.\" $Revision: 1.24 $ $Date: 2014/10/08 09:09:37 $
 .\"
 .TH geog 1 "geography application"
 .SH NAME
@@ -117,18 +117,17 @@ the perpendicular distance from the plane to the point, and \fIz\fP simply
 repeats the vertical coordinate. \fIearth_radius\fP gives radius
 of the Earth in altitude units.
 .TP
-\fBgeog\fP \fBlonlat_to_xy\fP \fIprojection\fP [\fIlon\fP \fIlat\fP ...]
+\fBgeog\fP \fBlonlat_to_xy\fP \fIprojection\fP
 transforms longitudes and latitudes to map coordinates using
 \fIprojection\fP, which must be a character string intelligible to
 \fBGeogProjSetFmStr\fP. See \fBgeog_proj\fP (3). The longitudes
-and latitudesare either given on the command line or read from
-standard input.
+and latitudes are read from standard input.
 .TP
-\fBgeog\fP \fBxy_to_lonlat\fP \fIprojection\fP [\fIx\fP \fIy\fP ...]
+\fBgeog\fP \fBxy_to_lonlat\fP \fIprojection\fP
 transforms map coordinates to longitudes and latitudes using
 \fIprojection\fP, which must be a character string intelligible to
 \fBGeogProjSetFmStr\fP. See \fBgeog_proj\fP (3). The map coordinates
-are either given on the command line or read from standard input.
+are read from standard input.
 .SH SEE ALSO
 \fBgeog_lib\fP (3), \fBprintf\fP (1)
 .SH AUTHOR
