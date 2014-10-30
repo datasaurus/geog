@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.5 $ $Date: 2013/01/10 21:19:07 $
+   .	$Revision: 1.6 $ $Date: 2013/05/10 22:32:05 $
  */
 
 /*
@@ -432,8 +432,12 @@ int GeogProjSetLambertConfConic(double lon0, double lat0,
 	return GeogProjSetMercator(lon0, proj_p);
     }
     proj.params.LambertConfConic.lon0 = GeogLonR(lon0, 0.0);
-    n = log(cos(lat1) / cos(lat2))
-	/ log(tan(M_PI_4 + lat2 / 2.0) / tan(M_PI_4 + lat1 / 2.0));
+    if ( lat1 == lat2 ) {
+	n = sin(lat1);
+    } else {
+	n = log(cos(lat1) / cos(lat2))
+	    / log(tan(M_PI_4 + lat2 / 2.0) / tan(M_PI_4 + lat1 / 2.0));
+    }
     if ( !isfinite(n) ) {
 	fprintf(stderr, "  Lambert Conformal Conic n parameter not finite.\n");
 	return 0;

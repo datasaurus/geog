@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.38 $ $Date: 2013/05/10 22:26:56 $
+   .	$Revision: 1.39 $ $Date: 2013/05/13 22:54:16 $
    .
    .	References
    .	Smart, W. M., "Textbook on Spherical Astronomy",

@@ -31,7 +31,7 @@
    .
    .	Please send feedback to dev0@trekix.net
    .
-   .	$Revision: 1.28 $ $Date: 2013/05/10 22:26:56 $
+   .	$Revision: 1.29 $ $Date: 2013/05/13 22:54:16 $
  */
 
 #ifndef GEOG_LIB_H_
