@@ -48,11 +48,11 @@ obj : ${OBJ}
 
 install : ${EXECS}
 	mkdir -p ${BINDIR}
-	cp ${EXECS} ${BINDIR}
+	cp -f -p ${EXECS} ${BINDIR}
 	mkdir -p ${MAN1DIR}
-	cp ../man/man1/*.1 ${MAN1DIR}
+	cp -f -p ../man/man1/*.1 ${MAN1DIR}
 	mkdir -p ${MAN3DIR}
-	cp ../man/man3/*.3 ${MAN3DIR}
+	cp -f -p ../man/man3/*.3 ${MAN3DIR}
 
 geog : ${OBJ}
 	${CC} ${CFLAGS} -o geog ${OBJ} -lm
